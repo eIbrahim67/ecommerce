@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 210 11% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 11% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 11% 15%;
+
+    --primary: 148 47% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 210 11% 15%;
+
+    --muted: 150 20% 96%;
+    --muted-foreground: 210 10% 50%;
+
+    --accent: 148 47% 95%;
+    --accent-foreground: 148 47% 35%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 20% 92%;
+    --input: 210 20% 92%;
+    --ring: 148 47% 48%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --brand-yellow: 43 96% 56%;
+    --brand-orange: 24 95% 53%;
+    --badge-hot: 0 80% 55%;
+    --badge-sale: 148 47% 48%;
+    --badge-new: 210 80% 55%;
+    --badge-discount: 24 95% 53%;
+
+    --text-heading: 210 11% 15%;
+    --text-body: 210 10% 40%;
+    --text-price: 148 47% 40%;
+    --text-price-old: 210 10% 65%;
+
+    --surface-light: 150 25% 97%;
+    --surface-banner: 148 40% 94%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 148 47% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 148 47% 95%;
+    --sidebar-accent-foreground: 148 47% 35%;
+    --sidebar-border: 210 20% 92%;
+    --sidebar-ring: 148 47% 48%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Lato', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+    font-family: 'Quicksand', sans-serif;
+    color: hsl(var(--text-heading));
+  }
+}
+
+@layer components {
+  .badge-hot {
+    @apply bg-badge-hot text-xs font-semibold px-2.5 py-1 rounded;
+    color: hsl(0 0% 100%);
+  }
+  .badge-sale {
+    @apply bg-badge-sale text-xs font-semibold px-2.5 py-1 rounded;
+    color: hsl(0 0% 100%);
+  }
+  .badge-new {
+    @apply bg-badge-new text-xs font-semibold px-2.5 py-1 rounded;
+    color: hsl(0 0% 100%);
+  }
+  .badge-discount {
+    @apply bg-badge-discount text-xs font-semibold px-2.5 py-1 rounded;
+    color: hsl(0 0% 100%);
+  }
+  .price-current {
+    @apply text-text-price font-bold;
+    font-family: 'Quicksand', sans-serif;
+  }
+  .price-old {
+    @apply text-text-price-old line-through text-sm;
+  }
+}
