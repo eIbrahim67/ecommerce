@@ -25,9 +25,9 @@ api.interceptors.request.use((config) => {
         }
     }
 
-    // For cart endpoints, also include the X-Guest-Id header
-    // This supports both authenticated and anonymous cart operations
-    if (config.url?.includes("/cart")) {
+    // For cart and order endpoints, also include the X-Guest-Id header
+    // This supports both authenticated and anonymous operations
+    if (config.url?.includes("/cart") || config.url?.includes("/orders")) {
         const guestId = getOrCreateGuestId();
         config.headers["X-Guest-Id"] = guestId;
     }
