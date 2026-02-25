@@ -17,7 +17,7 @@ const Header = () => {
           <span className="text-3xl group-hover:scale-105 transition-transform" aria-hidden="true">🛒</span>
           <div>
             <h1 className="text-2xl font-bold leading-none text-heading group-hover:text-primary transition-colors" style={{ fontFamily: "'Quicksand', sans-serif" }}>
-              Nest
+              Nest-Mart
             </h1>
             <span className="text-xs text-text-body tracking-wider font-medium">GROCERY</span>
           </div>
