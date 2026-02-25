@@ -59,9 +59,11 @@ const App = () => (
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
 
+                    {/* Public Routes (Cart & Checkout accessible to guests) */}
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+
                     {/* Protected Routes */}
-                    <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
-                    <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
                     <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
                     <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
 
