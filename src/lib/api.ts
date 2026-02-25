@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getOrCreateGuestId } from "./guestId";
 
 const API_BASE_URL = "/api/v1";
 
@@ -9,11 +10,9 @@ export const api = axios.create({
     },
 });
 
-// Interceptor to inject the JWT token
+// Interceptor to inject the JWT token and guest ID header
 api.interceptors.request.use((config) => {
-    // We will retrieve the token. In this app, it's typically stored in localStorage
-    // or through the Auth context. But the Auth context state might use localStorage
-    // or a cookie. Let's use localStorage for now, since it was previously used there.
+    // Inject JWT token if authenticated
     const storedUser = localStorage.getItem("ecommerce_auth_user");
     if (storedUser) {
         try {
@@ -25,6 +24,14 @@ api.interceptors.request.use((config) => {
             console.error("Failed to parse stored user for token", e);
         }
     }
+
+    // For cart endpoints, also include the X-Guest-Id header
+    // This supports both authenticated and anonymous cart operations
+    if (config.url?.includes("/cart")) {
+        const guestId = getOrCreateGuestId();
+        config.headers["X-Guest-Id"] = guestId;
+    }
+
     return config;
 }, (error) => {
     return Promise.reject(error);

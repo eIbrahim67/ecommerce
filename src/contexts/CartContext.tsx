@@ -25,6 +25,7 @@ interface CartContextType {
     cartTotal: number;
     cartCount: number;
     isLoading: boolean;
+    isAuthenticated: boolean; // Track if user is logged in
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -36,12 +37,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { isAuthenticated } = useAuth();
 
     const fetchCart = async () => {
-        if (!isAuthenticated) {
-            setItems([]);
-            setCartTotal(0);
-            return;
-        }
-
+        // Cart is now available for both authenticated and anonymous users
         try {
             setIsLoading(true);
             const res = await api.get("/cart");
@@ -50,7 +46,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setCartTotal(env.data?.totalPrice || 0);
         } catch (error) {
             console.error("Failed to fetch cart:", error);
-            // Optionally clear cart on 401
+            // On error, clear cart state
             setItems([]);
             setCartTotal(0);
         } finally {
@@ -59,16 +55,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     useEffect(() => {
+        // Fetch cart on mount or when auth state changes
+        // Both authenticated and anonymous users can have carts
         fetchCart();
     }, [isAuthenticated]);
 
     const addToCart = async (productId: number, variantId?: number, quantity = 1) => {
-        if (!isAuthenticated) {
-            toast.error("Please login to add items to your cart.");
-            return;
-        }
+        // Anonymous users can now add to cart
         try {
-            const body: any = { productVariantId: variantId, quantity };
+            const body: any = { productId, productVariantId: variantId, quantity };
             const res = await api.post("/cart", body);
             unwrapResponse(res.data);
             await fetchCart();
@@ -130,6 +125,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 cartTotal,
                 cartCount,
                 isLoading,
+                isAuthenticated,
             }}
         >
             {children}
