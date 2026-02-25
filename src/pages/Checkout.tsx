@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { ShieldCheck, ArrowRight } from "lucide-react";
-import { api, unwrapResponse } from "@/lib/api";
+import { useOrders } from "@/hooks/useOrders";
 
 const checkoutSchema = z.object({
     firstName: z.string().min(2, "First name is required"),
@@ -24,6 +24,7 @@ type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 const Checkout = () => {
     const { items, cartTotal, clearCart } = useCart();
     const navigate = useNavigate();
+    const { checkout: placeOrder, loading: isCheckingOut } = useOrders();
 
     const {
         register,
@@ -35,14 +36,15 @@ const Checkout = () => {
 
     const onSubmit = async (data: CheckoutFormValues) => {
         try {
-            const res = await api.post("/orders/checkout", data);
-            unwrapResponse(res.data);
-            toast.success("Order placed successfully! Thank you for shopping with us.");
-            await clearCart();
-            navigate("/");
+            const orderId = await placeOrder(data);
+            if (orderId) {
+                toast.success("Order placed successfully! Thank you for shopping with us.");
+                await clearCart();
+                navigate(`/orders/${orderId}`);
+            }
         } catch (error: any) {
             console.error("Checkout error:", error);
-            toast.error(error.message || "Failed to place order.");
+            // Error toast is already shown by the hook
         }
     };
 
@@ -164,10 +166,10 @@ const Checkout = () => {
                             <button
                                 type="submit"
                                 form="checkout-form"
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || isCheckingOut}
                                 className="w-full bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
                             >
-                                {isSubmitting ? "Processing Order..." : "Place Order"} <ArrowRight className="w-4 h-4" />
+                                {isSubmitting || isCheckingOut ? "Processing Order..." : "Place Order"} <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
                     </div>

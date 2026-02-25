@@ -19,7 +19,7 @@ const Header = () => {
             <h1 className="text-2xl font-bold leading-none text-heading group-hover:text-primary transition-colors" style={{ fontFamily: "'Quicksand', sans-serif" }}>
               Nest
             </h1>
-            <span className="text-xs text-text-body tracking-wider font-medium">MART & GROCERY</span>
+            <span className="text-xs text-text-body tracking-wider font-medium">GROCERY</span>
           </div>
         </Link>
 
