@@ -8,6 +8,7 @@ import * as z from "zod";
 import { toast } from "sonner";
 import { ShieldCheck, ArrowRight } from "lucide-react";
 import { useOrders } from "@/hooks/useOrders";
+import { usePayment } from "@/hooks/usePayment";
 
 const checkoutSchema = z.object({
     firstName: z.string().min(2, "First name is required"),
@@ -22,9 +23,10 @@ const checkoutSchema = z.object({
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
 const Checkout = () => {
-    const { items, cartTotal, clearCart } = useCart();
+    const { items, cartTotal } = useCart();
     const navigate = useNavigate();
     const { checkout: placeOrder, loading: isCheckingOut } = useOrders();
+    const { initiatePayment, loading: isCreatingPayment } = usePayment();
 
     const {
         register,
@@ -36,15 +38,27 @@ const Checkout = () => {
 
     const onSubmit = async (data: CheckoutFormValues) => {
         try {
+            // Step 1: Create the order
             const orderId = await placeOrder(data);
-            if (orderId) {
-                toast.success("Order placed successfully! Thank you for shopping with us.");
-                await clearCart();
-                navigate(`/orders/${orderId}`);
+            if (!orderId) {
+                return;
             }
+
+            toast.success("Order created! Redirecting to payment...");
+
+            // Step 2: Create payment session
+            const payment = await initiatePayment();
+            if (!payment) {
+                toast.error("Failed to initialize payment. Please try again.");
+                return;
+            }
+
+            // Step 3: Redirect to Paymob checkout
+            window.location.href = payment.iframeUrl;
+            
         } catch (error: any) {
             console.error("Checkout error:", error);
-            // Error toast is already shown by the hook
+            toast.error(error.message || "Failed to process checkout. Please try again.");
         }
     };
 
@@ -166,11 +180,16 @@ const Checkout = () => {
                             <button
                                 type="submit"
                                 form="checkout-form"
-                                disabled={isSubmitting || isCheckingOut}
+                                disabled={isSubmitting || isCheckingOut || isCreatingPayment}
                                 className="w-full bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
                             >
-                                {isSubmitting || isCheckingOut ? "Processing Order..." : "Place Order"} <ArrowRight className="w-4 h-4" />
+                                {isSubmitting || isCheckingOut || isCreatingPayment ? "Processing..." : "Proceed to Payment"} <ArrowRight className="w-4 h-4" />
                             </button>
+                            
+                            <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
+                                <ShieldCheck className="w-4 h-4" />
+                                <span>Secure payment powered by Paymob</span>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -28,6 +28,9 @@ const Register = React.lazy(() => import("./pages/Register"));
 const Account = React.lazy(() => import("./pages/Account"));
 const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = React.lazy(() => import("./pages/ResetPassword"));
+const PaymentCallback = React.lazy(() => import("./pages/PaymentCallback"));
+const Orders = React.lazy(() => import("./pages/Orders"));
+const OrderDetail = React.lazy(() => import("./pages/OrderDetail"));
 
 // Admin Pages
 const AdminDashboard = React.lazy(() => import("./pages/admin/AdminDashboard"));
@@ -62,10 +65,13 @@ const App = () => (
                     {/* Public Routes (Cart & Checkout accessible to guests) */}
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/payment-callback" element={<PaymentCallback />} />
 
                     {/* Protected Routes */}
                     <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
                     <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+                    <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+                    <Route path="/orders/:orderId" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
 
                     {/* Auth helpers */}
                     <Route path="/forgot-password" element={<ForgotPassword />} />
