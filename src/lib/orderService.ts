@@ -52,11 +52,28 @@ export interface ApiResponse<T> {
  */
 export async function checkout(request: CheckoutRequest): Promise<number> {
     try {
+        console.log("Creating order with data:", request);
         const res = await api.post<ApiResponse<number>>("/orders/checkout", request);
+        console.log("Order response:", res.data);
         const env = unwrapResponse(res.data);
         return env.data;
-    } catch (error) {
-        throw error;
+    } catch (error: any) {
+        console.error("Checkout error details:", {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status,
+            request: request,
+        });
+        
+        // Provide specific error messages
+        if (error.response?.status === 400) {
+            const errorMsg = error.response?.data?.message || error.response?.data?.errors?.join(", ");
+            throw new Error(errorMsg || "Invalid checkout data. Please check your cart and form.");
+        } else if (error.response?.status === 401) {
+            throw new Error("Authentication required. Please login or refresh the page.");
+        } else {
+            throw new Error(error.response?.data?.message || error.message || "Failed to create order");
+        }
     }
 }
 

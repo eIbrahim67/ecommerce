@@ -29,6 +29,7 @@ const Account = React.lazy(() => import("./pages/Account"));
 const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = React.lazy(() => import("./pages/ResetPassword"));
 const PaymentCallback = React.lazy(() => import("./pages/PaymentCallback"));
+const PaymentProcessing = React.lazy(() => import("./pages/PaymentProcessing"));
 const Orders = React.lazy(() => import("./pages/Orders"));
 const OrderDetail = React.lazy(() => import("./pages/OrderDetail"));
 
@@ -65,6 +66,7 @@ const App = () => (
                     {/* Public Routes (Cart & Checkout accessible to guests) */}
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/payment-processing" element={<PaymentProcessing />} />
                     <Route path="/payment-callback" element={<PaymentCallback />} />
 
                     {/* Protected Routes */}

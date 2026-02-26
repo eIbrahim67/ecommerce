@@ -20,12 +20,34 @@ export interface PaymentStatus {
  */
 export async function createPayment(): Promise<PaymentResponse> {
   try {
+    console.log("Creating payment session...");
+    console.log("Request URL:", "/payments/create");
+    console.log("Guest ID:", localStorage.getItem("ecommerce_guest_id"));
+    console.log("Auth User:", localStorage.getItem("ecommerce_auth_user"));
+    
     const res = await api.post("/payments/create", {});
+    console.log("Payment response:", res.data);
     const envelope = unwrapResponse(res.data);
     return envelope.data || envelope;
   } catch (error: any) {
-    console.error("Create payment error:", error);
-    throw new Error(error.response?.data?.message || error.message || "Failed to create payment");
+    console.error("Create payment error details:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      url: error.config?.url,
+      headers: error.config?.headers,
+    });
+    
+    // Provide more specific error messages
+    if (error.response?.status === 400) {
+      throw new Error(error.response?.data?.message || "Cart is empty or invalid");
+    } else if (error.response?.status === 401) {
+      throw new Error("Authentication required. Please login or refresh the page.");
+    } else if (error.response?.status === 502) {
+      throw new Error("Payment service is temporarily unavailable. Please try again.");
+    } else {
+      throw new Error(error.response?.data?.message || error.message || "Failed to create payment");
+    }
   }
 }
 

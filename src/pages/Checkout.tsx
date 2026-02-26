@@ -44,7 +44,7 @@ const Checkout = () => {
                 return;
             }
 
-            toast.success("Order created! Redirecting to payment...");
+            toast.success("Order created! Preparing payment...");
 
             // Step 2: Create payment session
             const payment = await initiatePayment();
@@ -53,8 +53,13 @@ const Checkout = () => {
                 return;
             }
 
-            // Step 3: Redirect to Paymob checkout
-            window.location.href = payment.iframeUrl;
+            // Step 3: Navigate to payment processing page (intermediate page)
+            navigate("/payment-processing", {
+                state: {
+                    paymentUrl: payment.iframeUrl,
+                    orderId: payment.orderId
+                }
+            });
             
         } catch (error: any) {
             console.error("Checkout error:", error);
