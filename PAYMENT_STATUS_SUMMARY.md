@@ -11,8 +11,8 @@
 ### ✅ Frontend: COMPLETE
 All frontend payment integration is complete and working. No changes needed.
 
-### ⚠️ Backend: BLOCKED
-Backend needs to switch from Unified Checkout API to Legacy Iframe API.
+### ✅ Backend: FIXED
+Backend authentication issue has been resolved. Ready for testing.
 
 ---
 
@@ -41,9 +41,9 @@ Backend needs to switch from Unified Checkout API to Legacy Iframe API.
 
 ---
 
-## 🚨 The Problem
+## ✅ The Problem (RESOLVED)
 
-**Error Message:**
+**Error Message (Was):**
 ```json
 {
   "success": false,
@@ -52,55 +52,66 @@ Backend needs to switch from Unified Checkout API to Legacy Iframe API.
 }
 ```
 
-**Root Cause:**
-Backend is calling Paymob's Unified Checkout API (`/v1/intention/`) which requires a `client_secret`, but your Paymob account has a Legacy Iframe integration.
+**Root Cause (Fixed):**
+Backend was using wrong authentication header format for Paymob's Unified Checkout API:
+- ❌ Was using: `Authorization: Bearer {auth_token}`
+- ✅ Now using: `Authorization: Token {SecretKey}`
 
 **Your Paymob Details:**
-- Iframe ID: 1009847
-- Iframe Name: Installment_Discount
+- Integration Type: Unified Checkout (supported)
 - Integration ID: 158
-- Type: Legacy Iframe (NOT Unified Checkout)
+- Mode: TEST
 
 ---
 
-## ✅ The Solution
+## ✅ The Solution (IMPLEMENTED)
 
-Backend needs to switch to the 3-step Legacy Iframe flow:
+Backend has fixed the authentication method:
 
-### Current Flow (NOT Working)
-```
-POST /v1/intention/ → Get client_secret → Build URL
+### What Was Changed
+```csharp
+// Before (WRONG)
+request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+
+// After (CORRECT)
+request.Headers.Add("Authorization", $"Token {_paymobConfig.SecretKey}");
 ```
 
-### Required Flow (Will Work)
-```
-1. POST /api/auth/tokens → Get auth token
-2. POST /api/ecommerce/orders → Register order, get order ID  
-3. POST /api/acceptance/payment_keys → Get payment key
-4. Build URL: https://accept.paymob.com/api/acceptance/iframes/1009847?payment_token={payment_key}
-```
+### Result
+- ✅ Backend now authenticates correctly with Paymob
+- ✅ Paymob returns `client_secret` as expected
+- ✅ Payment creation endpoint works
+- ✅ All 17 backend tests passing
+- ✅ Ready for end-to-end testing
 
 ---
 
-## 📝 What Backend Needs to Do
+## 📝 What Backend Did
 
-I've created a complete implementation guide: **`BACKEND_LEGACY_IFRAME_FIX.md`**
+~~I've created a complete implementation guide: **`BACKEND_LEGACY_IFRAME_FIX.md`**~~
 
-This document includes:
-1. ✅ Configuration updates (add IntegrationId and IframeId)
-2. ✅ Complete DTO classes with proper JSON serialization
-3. ✅ Full implementation of 3-step flow
-4. ✅ Error handling and logging
-5. ✅ Testing commands (cURL)
-6. ✅ Debugging tips
+**UPDATE:** Backend team identified and fixed the issue differently than originally documented. The solution was simpler:
 
-**Estimated Time:** 2-3 hours to implement + 1 hour to test
+**The Fix:**
+- Changed authentication header from `Bearer {auth_token}` to `Token {SecretKey}`
+- Your Paymob account DOES support Unified Checkout API
+- No need for 3-step Legacy Iframe flow
+
+**Status:**
+- ✅ Backend code fixed
+- ✅ All tests passing (17/17)
+- ⏳ Needs deployment (if not deployed yet)
+- ⏳ Needs end-to-end testing
+
+**Estimated Time:** Already complete!
 
 ---
 
 ## 🧪 Testing After Fix
 
-Once backend implements the fix, test with:
+~~Once backend implements the fix, test with:~~
+
+**UPDATE:** Backend is fixed! Test with:
 
 ```bash
 # 1. Create order
@@ -128,10 +139,12 @@ curl -X POST "https://nestmart.runasp.net/api/v1/payments/create" \
 ```json
 {
   "success": true,
-  "iframeUrl": "https://accept.paymob.com/api/acceptance/iframes/1009847?payment_token=...",
-  "orderId": 16
+  "iframeUrl": "https://accept.paymob.com/unifiedcheckout/?publicKey=egy_pk_test_...&clientSecret=egy_csk_test_...",
+  "orderId": 26
 }
 ```
+
+**Note:** URL format is Unified Checkout (not Legacy Iframe as originally documented)
 
 ---
 
@@ -224,13 +237,14 @@ All documentation is complete and ready:
 ## ✅ Summary
 
 **Frontend:** ✅ Complete - No changes needed  
-**Backend:** ⚠️ Needs fix - See `BACKEND_LEGACY_IFRAME_FIX.md`  
-**Estimated Time to Fix:** 2-3 hours  
-**Blocker:** Backend using wrong Paymob API  
+**Backend:** ✅ Fixed - Authentication header corrected  
+**Estimated Time to Fix:** Already complete!  
+**Blocker:** ~~Backend using wrong Paymob API~~ RESOLVED  
 
-**Once backend implements the fix, the entire payment flow will work end-to-end! 🚀**
+**The payment integration is now ready for end-to-end testing! 🚀**
 
 ---
 
 **Last Updated:** February 26, 2026  
-**Status:** Waiting for backend implementation
+**Status:** ✅ Fixed - Ready for Testing  
+**See:** `PAYMENT_ISSUE_RESOLVED.md` for details
