@@ -33,18 +33,27 @@ export async function createPayment(): Promise<PaymentResponse> {
     console.error("Create payment error details:", {
       message: error.message,
       response: error.response?.data,
+      responseText: error.response?.data?.message,
+      detail: error.response?.data?.detail,
       status: error.response?.status,
       url: error.config?.url,
       headers: error.config?.headers,
     });
     
+    // Log the full response for debugging
+    if (error.response?.data) {
+      console.error("Full error response:", JSON.stringify(error.response.data, null, 2));
+    }
+    
     // Provide more specific error messages
     if (error.response?.status === 400) {
-      throw new Error(error.response?.data?.message || "Cart is empty or invalid");
+      const errorMsg = error.response?.data?.message || error.response?.data?.detail;
+      throw new Error(errorMsg || "Cart is empty or invalid");
     } else if (error.response?.status === 401) {
       throw new Error("Authentication required. Please login or refresh the page.");
     } else if (error.response?.status === 502) {
-      throw new Error("Payment service is temporarily unavailable. Please try again.");
+      const errorMsg = error.response?.data?.detail || error.response?.data?.message;
+      throw new Error(errorMsg || "Payment service is temporarily unavailable. Please try again.");
     } else {
       throw new Error(error.response?.data?.message || error.message || "Failed to create payment");
     }
