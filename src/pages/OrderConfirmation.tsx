@@ -144,7 +144,9 @@ const OrderConfirmation = () => {
               </p>
               <div className="inline-flex items-center bg-green-50 text-green-700 px-4 py-2 rounded-full">
                 <CreditCard className="h-5 w-5 mr-2" />
-                <span className="font-medium">Payment Status: {paymentStatus}</span>
+                <span className="font-medium">
+                  {paymentStatus === "Paid" ? "Payment Status: Paid" : "Payment: Cash on Delivery"}
+                </span>
               </div>
             </div>
           </div>

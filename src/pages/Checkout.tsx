@@ -6,9 +6,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { ShieldCheck, ArrowRight } from "lucide-react";
+import { ShieldCheck, ArrowRight, CreditCard, Banknote } from "lucide-react";
 import { useOrders } from "@/hooks/useOrders";
 import { usePayment } from "@/hooks/usePayment";
+import { useState } from "react";
 
 const checkoutSchema = z.object({
     firstName: z.string().min(2, "First name is required"),
@@ -22,11 +23,20 @@ const checkoutSchema = z.object({
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
+type PaymentMethod = "Card" | "CashOnDelivery"; // Updated to match backend
+
+const COD_FEE = 10; // Cash on Delivery fee in EGP
+
 const Checkout = () => {
     const { items, cartTotal } = useCart();
     const navigate = useNavigate();
     const { checkout: placeOrder, loading: isCheckingOut } = useOrders();
     const { initiatePayment, loading: isCreatingPayment } = usePayment();
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("Card"); // Default to Card
+
+    // Calculate total with COD fee if applicable
+    const codFee = paymentMethod === "CashOnDelivery" ? COD_FEE : 0;
+    const finalTotal = cartTotal + codFee;
 
     const {
         register,
@@ -38,28 +48,40 @@ const Checkout = () => {
 
     const onSubmit = async (data: CheckoutFormValues) => {
         try {
-            // Step 1: Create the order
-            const orderId = await placeOrder(data);
+            // Step 1: Create the order with payment method
+            const orderId = await placeOrder({
+                ...data,
+                paymentMethod: paymentMethod
+            });
             if (!orderId) {
                 return;
             }
 
-            toast.success("Order created! Preparing payment...");
+            toast.success("Order created successfully!");
 
-            // Step 2: Create payment session
-            const payment = await initiatePayment();
-            if (!payment) {
-                toast.error("Failed to initialize payment. Please try again.");
-                return;
-            }
-
-            // Step 3: Navigate to payment processing page (intermediate page)
-            navigate("/payment-processing", {
-                state: {
-                    paymentUrl: payment.iframeUrl,
-                    orderId: payment.orderId
+            // Step 2: Handle payment based on selected method
+            if (paymentMethod === "CashOnDelivery") {
+                // Cash on Delivery - redirect directly to confirmation
+                toast.success("Order placed! You'll pay on delivery.");
+                navigate(`/order/${orderId}/confirmation`);
+            } else {
+                // Card Payment - create payment session and redirect to Paymob
+                toast.success("Preparing payment...");
+                
+                const payment = await initiatePayment();
+                if (!payment) {
+                    toast.error("Failed to initialize payment. Please try again.");
+                    return;
                 }
-            });
+
+                // Navigate to payment processing page (intermediate page)
+                navigate("/payment-processing", {
+                    state: {
+                        paymentUrl: payment.iframeUrl,
+                        orderId: payment.orderId
+                    }
+                });
+            }
             
         } catch (error: any) {
             console.error("Checkout error:", error);
@@ -92,6 +114,72 @@ const Checkout = () => {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Form */}
                     <div className="flex-1">
+                        {/* Payment Method Selection */}
+                        <div className="bg-card border border-border rounded-xl p-6 mb-6">
+                            <h2 className="text-xl font-bold mb-4 border-b border-border pb-4">
+                                Payment Method
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Card Payment Option */}
+                                <button
+                                    type="button"
+                                    onClick={() => setPaymentMethod("Card")}
+                                    className={`relative flex items-center gap-4 p-4 border-2 rounded-lg transition-all ${
+                                        paymentMethod === "Card"
+                                            ? "border-primary bg-primary/5"
+                                            : "border-border hover:border-primary/50"
+                                    }`}
+                                >
+                                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                        paymentMethod === "Card" ? "border-primary" : "border-gray-300"
+                                    }`}>
+                                        {paymentMethod === "Card" && (
+                                            <div className="w-3 h-3 rounded-full bg-primary"></div>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 text-left">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <CreditCard className="w-5 h-5 text-primary" />
+                                            <span className="font-semibold">Debit/Credit Card</span>
+                                        </div>
+                                        <p className="text-xs text-gray-600">Pay securely with your card</p>
+                                    </div>
+                                    {paymentMethod === "Card" && (
+                                        <div className="absolute top-2 right-2">
+                                            <ShieldCheck className="w-5 h-5 text-primary" />
+                                        </div>
+                                    )}
+                                </button>
+
+                                {/* Cash on Delivery Option */}
+                                <button
+                                    type="button"
+                                    onClick={() => setPaymentMethod("CashOnDelivery")}
+                                    className={`relative flex items-center gap-4 p-4 border-2 rounded-lg transition-all ${
+                                        paymentMethod === "CashOnDelivery"
+                                            ? "border-primary bg-primary/5"
+                                            : "border-border hover:border-primary/50"
+                                    }`}
+                                >
+                                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                        paymentMethod === "CashOnDelivery" ? "border-primary" : "border-gray-300"
+                                    }`}>
+                                        {paymentMethod === "CashOnDelivery" && (
+                                            <div className="w-3 h-3 rounded-full bg-primary"></div>
+                                        )}
+                                    </div>
+                                    <div className="flex-1 text-left">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <Banknote className="w-5 h-5 text-green-600" />
+                                            <span className="font-semibold">Cash on Delivery</span>
+                                        </div>
+                                        <p className="text-xs text-gray-600">Pay when you receive</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Shipping Information Form */}
                         <div className="bg-card border border-border rounded-xl p-6">
                             <h2 className="text-xl font-bold mb-6 flex items-center gap-2 border-b border-border pb-4">
                                 <ShieldCheck className="text-primary w-5 h-5" /> Shipping Information
@@ -176,9 +264,15 @@ const Checkout = () => {
                                     <span>Shipping</span>
                                     <span className="font-semibold text-heading text-green-600">Free</span>
                                 </div>
+                                {paymentMethod === "CashOnDelivery" && (
+                                    <div className="flex justify-between text-text-body">
+                                        <span>Cash on Delivery Fee</span>
+                                        <span className="font-semibold text-heading">${COD_FEE.toFixed(2)}</span>
+                                    </div>
+                                )}
                                 <div className="border-t border-border pt-3 flex justify-between font-bold text-lg">
                                     <span>Total</span>
-                                    <span className="text-primary">${cartTotal.toFixed(2)}</span>
+                                    <span className="text-primary">${finalTotal.toFixed(2)}</span>
                                 </div>
                             </div>
 
@@ -188,12 +282,23 @@ const Checkout = () => {
                                 disabled={isSubmitting || isCheckingOut || isCreatingPayment}
                                 className="w-full bg-primary text-primary-foreground py-3.5 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
                             >
-                                {isSubmitting || isCheckingOut || isCreatingPayment ? "Processing..." : "Proceed to Payment"} <ArrowRight className="w-4 h-4" />
+                                {isSubmitting || isCheckingOut || isCreatingPayment 
+                                    ? "Processing..." 
+                                    : paymentMethod === "CashOnDelivery" 
+                                        ? "Place Order" 
+                                        : "Proceed to Payment"
+                                } 
+                                <ArrowRight className="w-4 h-4" />
                             </button>
                             
                             <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500">
                                 <ShieldCheck className="w-4 h-4" />
-                                <span>Secure payment powered by Paymob</span>
+                                <span>
+                                    {paymentMethod === "CashOnDelivery" 
+                                        ? "Secure checkout - Pay on delivery" 
+                                        : "Secure payment powered by Paymob"
+                                    }
+                                </span>
                             </div>
                         </div>
                     </div>

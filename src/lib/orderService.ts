@@ -13,6 +13,7 @@ export interface CheckoutRequest {
     address: string;
     city: string;
     zipCode: string;
+    paymentMethod?: string; // "card" or "cod"
 }
 
 export interface OrderItem {
@@ -158,6 +159,8 @@ export function getStatusColor(status: string): string {
         case "completed":
             return "bg-green-100 text-green-800";
         case "cancelled":
+            return "bg-red-100 text-red-800";
+        case "paymentfailed":
             return "bg-red-100 text-red-800";
         default:
             return "bg-gray-100 text-gray-800";
