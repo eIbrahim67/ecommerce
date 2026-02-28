@@ -71,6 +71,8 @@ const ProductDetail = () => {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isTogglingWishlist, setIsTogglingWishlist] = useState(false);
 
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -98,6 +100,9 @@ const ProductDetail = () => {
           setSelectedVariant(null);
         }
 
+        // Reset quantity to 1 when product changes
+        setQty(1);
+
         // Fetch related products from same category
         if (data.categoryId) {
           const relRes = await api.get(`/products`, { params: { categoryId: data.categoryId, limit: 4 } });
@@ -115,7 +120,6 @@ const ProductDetail = () => {
 
     if (id) {
       fetchProductAndRelated();
-      window.scrollTo(0, 0);
     }
   }, [id]);
 
@@ -168,7 +172,45 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
-        <div className="flex-1 flex items-center justify-center">Loading product...</div>
+        <div className="container mx-auto px-4 xl:px-0 my-8">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Main content skeleton */}
+            <div className="flex-1">
+              <div className="flex flex-col md:flex-row gap-8 mb-8">
+                {/* Image Gallery Skeleton */}
+                <div className="md:w-1/2">
+                  <div className="bg-surface-light rounded-xl aspect-square animate-pulse mb-3"></div>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="w-20 h-20 rounded-lg bg-surface-light animate-pulse"></div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Details Skeleton */}
+                <div className="md:w-1/2 space-y-4">
+                  <div className="h-8 bg-surface-light rounded-lg w-3/4 animate-pulse"></div>
+                  <div className="h-6 bg-surface-light rounded-lg w-1/2 animate-pulse"></div>
+                  <div className="h-12 bg-surface-light rounded-lg w-1/3 animate-pulse"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-surface-light rounded w-full animate-pulse"></div>
+                    <div className="h-4 bg-surface-light rounded w-5/6 animate-pulse"></div>
+                    <div className="h-4 bg-surface-light rounded w-4/6 animate-pulse"></div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="h-12 bg-surface-light rounded-lg w-32 animate-pulse"></div>
+                    <div className="h-12 bg-surface-light rounded-lg flex-1 animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar Skeleton */}
+            <aside className="w-full lg:w-64 shrink-0">
+              <div className="bg-surface-light rounded-xl p-5 h-64 animate-pulse"></div>
+            </aside>
+          </div>
+        </div>
         <Footer />
       </div>
     );
@@ -295,23 +337,50 @@ const ProductDetail = () => {
                   <button
                     onClick={async (e) => {
                       e.preventDefault();
-                      await addToCart(product.id, selectedVariant?.id, qty);
+                      if (isAddingToCart) return;
+                      setIsAddingToCart(true);
+                      try {
+                        await addToCart(product.id, selectedVariant?.id, qty);
+                      } finally {
+                        setTimeout(() => setIsAddingToCart(false), 500);
+                      }
                     }}
-                    className="bg-primary text-primary-foreground px-6 h-11 rounded-lg font-semibold text-sm flex items-center gap-2 hover:opacity-90 transition-opacity"
+                    disabled={isAddingToCart}
+                    className="bg-primary text-primary-foreground px-6 h-11 rounded-lg font-semibold text-sm flex items-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    <ShoppingCart className="w-4 h-4" /> Add to cart
+                    {isAddingToCart ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Adding...
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingCart className="w-4 h-4" /> Add to cart
+                      </>
+                    )}
                   </button>
                   <button
                     onClick={async () => {
-                      if (isWishlisted) {
-                        await removeFromWishlist(product.id);
-                      } else {
-                        await addToWishlist(product.id);
+                      if (isTogglingWishlist) return;
+                      setIsTogglingWishlist(true);
+                      try {
+                        if (isWishlisted) {
+                          await removeFromWishlist(product.id);
+                        } else {
+                          await addToWishlist(product.id);
+                        }
+                      } finally {
+                        setTimeout(() => setIsTogglingWishlist(false), 500);
                       }
                     }}
-                    className={`border h-11 w-11 flex items-center justify-center rounded-lg transition-colors ${isWishlisted ? "bg-red-50 text-red-500 border-red-200" : "border-border text-text-body hover:text-primary hover:border-primary"}`}
+                    disabled={isTogglingWishlist}
+                    className={`border h-11 w-11 flex items-center justify-center rounded-lg transition-colors disabled:opacity-70 disabled:cursor-not-allowed ${isWishlisted ? "bg-red-50 text-red-500 border-red-200" : "border-border text-text-body hover:text-primary hover:border-primary"}`}
                   >
-                    <Heart className={`w-4 h-4 ${isWishlisted ? "fill-current" : ""}`} />
+                    {isTogglingWishlist ? (
+                      <div className="w-4 h-4 border-2 border-current/30 border-t-current rounded-full animate-spin"></div>
+                    ) : (
+                      <Heart className={`w-4 h-4 ${isWishlisted ? "fill-current" : ""}`} />
+                    )}
                   </button>
                   <button className="border border-border h-11 w-11 flex items-center justify-center rounded-lg text-text-body hover:text-primary hover:border-primary transition-colors"><Shuffle className="w-4 h-4" /></button>
                 </div>

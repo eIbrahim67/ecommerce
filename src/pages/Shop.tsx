@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsletterBanner from "@/components/NewsletterBanner";
 import ProductCard, { ProductSummaryDto } from "@/components/ProductCard";
+import { ShopProductListSkeleton, SidebarSkeleton } from "@/components/SkeletonLoader";
 import SEO from "@/components/SEO";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -28,15 +29,19 @@ const Shop = () => {
   const [products, setProducts] = useState<ProductSummaryDto[]>([]);
   const [categories, setCategories] = useState<CategoryDto[]>([]);
   const [isProductsLoading, setIsProductsLoading] = useState(true);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        setIsCategoriesLoading(true);
         const res = await api.get("/categories");
         const env = unwrapResponse(res.data);
         setCategories(env.data || []);
       } catch (error) {
         console.error("Failed to load categories", error);
+      } finally {
+        setIsCategoriesLoading(false);
       }
     };
     fetchCategories();
@@ -94,85 +99,96 @@ const Shop = () => {
       <Header />
 
       {/* Category Links replacing static breadcrumb links */}
-      <section className="bg-surface-banner py-8 border-b border-border/50">
+      <section className="bg-gradient-to-br from-surface-light to-white py-10 border-b border-border/50">
         <div className="container mx-auto px-4 xl:px-0 text-center">
-          <h2 className="text-2xl font-bold mb-6 text-heading" style={{ fontFamily: "'Quicksand', sans-serif" }}>Shop by Category</h2>
-          <div className="flex flex-wrap justify-center gap-3">
-            <button
-              onClick={() => { setSelectedCategoryId(null); setCurrentPage(1); }}
-              className={`text-sm font-semibold px-6 py-2 rounded-full transition-all duration-300 ${!selectedCategoryId ? "bg-primary text-primary-foreground shadow-md -translate-y-0.5" : "bg-surface-light text-text-body border border-border/50 hover:border-primary/50 hover:text-primary hover:-translate-y-0.5 hover:shadow-sm"}`}
-            >
-              All Products
-            </button>
-            {categories.slice(0, 5).map((cat) => (
+          <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-heading" style={{ fontFamily: "'Quicksand', sans-serif" }}>Shop by Category</h2>
+          <p className="text-text-body mb-8 text-lg">Find exactly what you're looking for</p>
+          {isCategoriesLoading ? (
+            <div className="flex flex-wrap justify-center gap-3">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-12 w-32 bg-surface-light rounded-full animate-pulse"></div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-wrap justify-center gap-3">
               <button
-                key={cat.id}
-                onClick={() => { setSelectedCategoryId(selectedCategoryId === cat.id ? null : cat.id); setCurrentPage(1); }}
-                className={`text-sm font-semibold px-6 py-2 rounded-full transition-all duration-300 ${selectedCategoryId === cat.id ? "bg-primary text-primary-foreground shadow-md -translate-y-0.5" : "bg-surface-light text-text-body border border-border/50 hover:border-primary/50 hover:text-primary hover:-translate-y-0.5 hover:shadow-sm"}`}
+                onClick={() => { setSelectedCategoryId(null); setCurrentPage(1); }}
+                className={`text-sm font-bold px-7 py-3 rounded-full transition-all duration-300 ${!selectedCategoryId ? "bg-primary text-primary-foreground shadow-xl scale-110" : "bg-white text-text-body border-2 border-border/50 hover:border-primary hover:text-primary hover:scale-105 hover:shadow-lg"}`}
               >
-                {cat.name}
+                All Products
               </button>
-            ))}
-          </div>
+              {categories.slice(0, 5).map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => { setSelectedCategoryId(selectedCategoryId === cat.id ? null : cat.id); setCurrentPage(1); }}
+                  className={`text-sm font-bold px-7 py-3 rounded-full transition-all duration-300 ${selectedCategoryId === cat.id ? "bg-primary text-primary-foreground shadow-xl scale-110" : "bg-white text-text-body border-2 border-border/50 hover:border-primary hover:text-primary hover:scale-105 hover:shadow-lg"}`}
+                >
+                  {cat.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       <div className="container mx-auto px-4 xl:px-0 my-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
-          <aside className="w-full lg:w-64 shrink-0 space-y-6">
-            <div className="bg-card border border-border rounded-xl p-5">
-              <h3 className="font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>Category</h3>
-              <ul className="space-y-3">
-                {categories.map((cat) => (
-                  <li
-                    key={cat.id}
-                    onClick={() => { setSelectedCategoryId(selectedCategoryId === cat.id ? null : cat.id); setCurrentPage(1); }}
-                    className={`flex items-center justify-between text-sm cursor-pointer transition-colors ${selectedCategoryId === cat.id ? "text-primary font-bold" : "text-text-body hover:text-primary"}`}
-                  >
-                    <span className="flex items-center gap-2"><span>{cat.imageUrl || "🛒"}</span> {cat.name}</span>
-                    <span className="bg-surface-light text-xs px-2 py-0.5 rounded-full text-text-body font-normal">{cat.productCount}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-card border border-border rounded-xl p-5">
-              <h3 className="font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>Fill by price</h3>
-              <input
-                type="range"
-                className="w-full accent-primary pointer-events-auto"
-                min={0}
-                max={500}
-                step={5}
-                value={priceRange}
-                onChange={(e) => { setPriceRange(Number(e.target.value)); setCurrentPage(1); }}
-              />
-              <div className="flex justify-between text-xs text-text-body mt-1">
-                <span>From: $0</span>
-                <span className="text-primary">To ${priceRange}</span>
+          {isCategoriesLoading ? (
+            <SidebarSkeleton />
+          ) : (
+            <aside className="w-full lg:w-72 shrink-0 space-y-6">
+              <div className="bg-gradient-to-br from-white to-surface-light border border-border rounded-2xl p-6 shadow-lg">
+                <h3 className="font-bold mb-5 text-lg" style={{ fontFamily: "'Quicksand', sans-serif" }}>Category</h3>
+                <ul className="space-y-3">
+                  {categories.map((cat) => (
+                    <li
+                      key={cat.id}
+                      onClick={() => { setSelectedCategoryId(selectedCategoryId === cat.id ? null : cat.id); setCurrentPage(1); }}
+                      className={`flex items-center justify-between text-sm cursor-pointer transition-all p-3 rounded-xl ${selectedCategoryId === cat.id ? "text-primary font-bold bg-primary/10 scale-105" : "text-text-body hover:text-primary hover:bg-surface-light"}`}
+                    >
+                      <span className="flex items-center gap-3"><span className="text-xl">{cat.imageUrl || "🛒"}</span> {cat.name}</span>
+                      <span className="bg-white text-xs px-3 py-1 rounded-full text-text-body font-semibold shadow-sm">{cat.productCount}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              <button
-                className="mt-4 w-full bg-primary text-primary-foreground py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
-                onClick={() => { setSelectedCategoryId(null); setPriceRange(500); setCurrentPage(1); }}
-              >
-                Clear Filters
-              </button>
-            </div>
+              <div className="bg-gradient-to-br from-white to-surface-light border border-border rounded-2xl p-6 shadow-lg">
+                <h3 className="font-bold mb-5 text-lg" style={{ fontFamily: "'Quicksand', sans-serif" }}>Filter by Price</h3>
+                <input
+                  type="range"
+                  className="w-full accent-primary pointer-events-auto h-2 rounded-full"
+                  min={0}
+                  max={500}
+                  step={5}
+                  value={priceRange}
+                  onChange={(e) => { setPriceRange(Number(e.target.value)); setCurrentPage(1); }}
+                />
+                <div className="flex justify-between text-sm text-text-body mt-3 font-semibold">
+                  <span>From: $0</span>
+                  <span className="text-primary text-base">To: ${priceRange}</span>
+                </div>
 
-            {/* Omitted "New Products" sidebar block for now to prevent overfetching or using static data, unless we build a dedicated api call. We can just hide it as it's redundant to the main list. */}
-          </aside>
+                <button
+                  className="mt-6 w-full bg-primary text-primary-foreground py-3 rounded-xl text-sm font-bold hover:bg-primary/90 hover:scale-105 transition-all shadow-md"
+                  onClick={() => { setSelectedCategoryId(null); setPriceRange(500); setCurrentPage(1); }}
+                >
+                  Clear All Filters
+                </button>
+              </div>
+            </aside>
+          )}
 
           {/* Product grid */}
           <main className="flex-1">
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-sm text-text-body">We found <span className="text-primary font-bold">{totalItems}</span> items for you!</p>
+            <div className="flex items-center justify-between mb-8 bg-white border border-border rounded-2xl p-5 shadow-sm">
+              <p className="text-sm text-text-body">We found <span className="text-primary font-bold text-lg">{totalItems}</span> items for you!</p>
               <div className="flex items-center gap-3">
                 <select
                   value={sortBy}
                   onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
-                  className="text-sm border border-border rounded-lg px-3 py-1.5 outline-none focus:border-primary"
+                  className="text-sm border-2 border-border rounded-xl px-4 py-2.5 outline-none focus:border-primary font-semibold transition-all"
                 >
                   <option value="featured">Sort by: Featured</option>
                   <option value="newest">Newest</option>
@@ -184,24 +200,25 @@ const Shop = () => {
             </div>
 
             {isProductsLoading ? (
-              <div className="text-center py-20 text-text-body">Loading products...</div>
+              <ShopProductListSkeleton count={12} />
             ) : products.length === 0 ? (
-              <div className="text-center py-12 bg-surface-light rounded-xl border border-border">
-                <h3 className="text-xl font-bold mb-2">No products found</h3>
-                <p className="text-text-body">Try adjusting your filters or search query.</p>
+              <div className="text-center py-16 bg-gradient-to-br from-surface-light to-white rounded-2xl border-2 border-dashed border-border">
+                <div className="text-6xl mb-4">🔍</div>
+                <h3 className="text-2xl font-bold mb-3">No products found</h3>
+                <p className="text-text-body mb-6">Try adjusting your filters or search query.</p>
                 <button
                   onClick={() => {
                     setSelectedCategoryId(null);
                     setPriceRange(500);
                     setCurrentPage(1);
                   }}
-                  className="mt-4 bg-primary text-primary-foreground px-6 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+                  className="bg-primary text-primary-foreground px-8 py-3 rounded-xl text-sm font-bold hover:scale-105 transition-all shadow-lg"
                 >
-                  Clear Filters
+                  Clear All Filters
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -210,12 +227,12 @@ const Shop = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-8">
+              <div className="flex items-center justify-center gap-2 mt-10">
                 {Array.from({ length: totalPages }).map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`w-9 h-9 rounded-lg text-sm font-medium transition-colors ${i + 1 === currentPage ? "bg-primary text-primary-foreground" : "bg-surface-light text-text-body hover:bg-primary hover:text-primary-foreground"}`}
+                    className={`w-11 h-11 rounded-xl text-sm font-bold transition-all ${i + 1 === currentPage ? "bg-primary text-primary-foreground shadow-lg scale-110" : "bg-white border-2 border-border text-text-body hover:bg-primary hover:text-primary-foreground hover:scale-105 hover:shadow-md"}`}
                   >
                     {i + 1}
                   </button>

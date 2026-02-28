@@ -25,6 +25,7 @@ const Register = () => {
     const { register: registerUser, isAuthenticated } = useAuth();
     const [showPw, setShowPw] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
         register,
@@ -39,7 +40,13 @@ const Register = () => {
     }
 
     const onSubmit = async (data: RegisterFormValues) => {
-        await registerUser(data.firstName, data.lastName, data.email, data.password);
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+        try {
+            await registerUser(data.firstName, data.lastName, data.email, data.password);
+        } finally {
+            setTimeout(() => setIsSubmitting(false), 500);
+        }
     };
 
     return (
@@ -121,9 +128,19 @@ const Register = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity mt-6"
+                            disabled={isSubmitting}
+                            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            <UserPlus className="w-4 h-4" /> Sign Up
+                            {isSubmitting ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    Creating Account...
+                                </>
+                            ) : (
+                                <>
+                                    <UserPlus className="w-4 h-4" /> Sign Up
+                                </>
+                            )}
                         </button>
                     </form>
 

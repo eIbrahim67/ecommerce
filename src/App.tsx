@@ -11,6 +11,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { GlobalLoader } from "./components/GlobalLoader";
 import { ErrorBoundary } from "./components/ErrorFallback";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Lazy Loaded Pages
 const Index = React.lazy(() => import("./pages/Index"));
@@ -53,6 +54,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <ScrollToTop />
                 <Suspense fallback={<GlobalLoader />}>
                   <Routes>
                     {/* Public Routes */}

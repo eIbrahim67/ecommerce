@@ -82,19 +82,19 @@
 
 @layer components {
   .badge-hot {
-    @apply bg-badge-hot text-xs font-semibold px-2.5 py-1 rounded;
+    @apply bg-badge-hot text-xs font-semibold px-2.5 py-1 rounded-lg;
     color: hsl(0 0% 100%);
   }
   .badge-sale {
-    @apply bg-badge-sale text-xs font-semibold px-2.5 py-1 rounded;
+    @apply bg-badge-sale text-xs font-semibold px-2.5 py-1 rounded-lg;
     color: hsl(0 0% 100%);
   }
   .badge-new {
-    @apply bg-badge-new text-xs font-semibold px-2.5 py-1 rounded;
+    @apply bg-badge-new text-xs font-semibold px-2.5 py-1 rounded-lg;
     color: hsl(0 0% 100%);
   }
   .badge-discount {
-    @apply bg-badge-discount text-xs font-semibold px-2.5 py-1 rounded;
+    @apply bg-badge-discount text-xs font-semibold px-2.5 py-1 rounded-lg;
     color: hsl(0 0% 100%);
   }
   .price-current {
@@ -103,5 +103,52 @@
   }
   .price-old {
     @apply text-text-price-old line-through text-sm;
+  }
+}
+
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-slideIn {
+    animation: slideIn 0.5s ease-out;
+  }
+
+  .animate-scaleIn {
+    animation: scaleIn 0.3s ease-out;
   }
 }

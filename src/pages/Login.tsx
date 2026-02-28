@@ -20,6 +20,7 @@ const Login = () => {
     const location = useLocation();
     const from = location.state?.from?.pathname || "/account";
     const [showPw, setShowPw] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {
         register,
@@ -34,7 +35,13 @@ const Login = () => {
     }
 
     const onSubmit = async (data: LoginFormValues) => {
-        await login(data.email, data.password);
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+        try {
+            await login(data.email, data.password);
+        } finally {
+            setTimeout(() => setIsSubmitting(false), 500);
+        }
     };
 
     return (
@@ -80,9 +87,19 @@ const Login = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity mt-6"
+                            disabled={isSubmitting}
+                            className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            <LogIn className="w-4 h-4" /> Sign In
+                            {isSubmitting ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    Signing In...
+                                </>
+                            ) : (
+                                <>
+                                    <LogIn className="w-4 h-4" /> Sign In
+                                </>
+                            )}
                         </button>
                     </form>
 

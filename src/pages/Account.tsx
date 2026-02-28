@@ -74,12 +74,19 @@ const Account = () => {
                     {/* Main Content */}
                     <div className="flex-1 space-y-6">
                         {/* Welcome Banner */}
-                        <div className="bg-surface-banner rounded-xl p-6 border border-border flex items-center justify-between">
+                        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-8 border-2 border-primary/20 flex items-center justify-between shadow-lg">
                             <div>
-                                <h2 className="text-xl font-bold font-heading mb-1">Hello, {user.name}!</h2>
-                                <p className="text-text-body text-sm">From your account dashboard you can view your recent orders and manage your settings.</p>
+                                <h2 className="text-2xl font-bold font-heading mb-2">Hello, {user.name}!</h2>
+                                <p className="text-text-body mb-4">From your account dashboard you can view your recent orders and manage your settings.</p>
+                                <Link 
+                                    to="/orders" 
+                                    className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-md"
+                                >
+                                    <Package className="w-5 h-5" />
+                                    View All Orders
+                                </Link>
                             </div>
-                            <div className="w-12 h-12 bg-primary text-primary-foreground text-xl font-bold rounded-full flex items-center justify-center shrink-0 uppercase shadow-sm">
+                            <div className="w-16 h-16 bg-primary text-primary-foreground text-2xl font-bold rounded-2xl flex items-center justify-center shrink-0 uppercase shadow-lg">
                                 {user.name.charAt(0)}
                             </div>
                         </div>

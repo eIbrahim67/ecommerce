@@ -34,11 +34,11 @@ const HeaderSearch = () => {
     };
 
     return (
-        <form onSubmit={handleSearch} className="flex-1 max-w-2xl hidden md:flex items-center border border-border/70 rounded-full overflow-hidden focus-within:shadow-md focus-within:border-primary/50 transition-all duration-300 bg-surface-light/30">
+        <form onSubmit={handleSearch} className="flex-1 max-w-2xl hidden md:flex items-center border-2 border-border/70 rounded-2xl overflow-hidden focus-within:shadow-xl focus-within:border-primary transition-all duration-300 bg-white">
             <select
                 value={selectedCategoryId}
                 onChange={(e) => setSelectedCategoryId(e.target.value)}
-                className="px-4 py-2.5 bg-transparent text-sm font-medium text-text-body border-r border-border/50 outline-none hover:text-primary cursor-pointer transition-colors"
+                className="px-5 py-3.5 bg-transparent text-sm font-semibold text-heading border-r-2 border-border/50 outline-none hover:text-primary cursor-pointer transition-colors"
                 aria-label="Select Category"
             >
                 <option value="">All Categories</option>
@@ -46,20 +46,23 @@ const HeaderSearch = () => {
                     <option key={cat.id} value={String(cat.id)}>{cat.name}</option>
                 ))}
             </select>
-            <input
-                type="text"
-                placeholder="Search for items..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 px-4 py-2.5 outline-none text-sm bg-transparent placeholder:text-text-body/60"
-                aria-label="Search items"
-            />
+            <div className="flex-1 flex items-center px-4">
+                <Search className="w-5 h-5 text-text-body/50 mr-3" />
+                <input
+                    type="text"
+                    placeholder="Search for products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="flex-1 py-3.5 outline-none text-sm bg-transparent placeholder:text-text-body/60 font-medium"
+                    aria-label="Search items"
+                />
+            </div>
             <button
                 type="submit"
-                className="px-5 py-2.5 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors focus:outline-none flex items-center justify-center"
+                className="px-8 py-3.5 bg-primary text-primary-foreground hover:bg-primary/90 transition-all focus:outline-none flex items-center justify-center font-bold text-sm hover:scale-105 active:scale-95"
                 aria-label="Search"
             >
-                <Search className="w-4 h-4" />
+                Search
             </button>
         </form>
     );
