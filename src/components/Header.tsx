@@ -21,12 +21,15 @@ const Header = () => {
           className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-2 group"
           aria-label="Nestmart Home"
         >
-          <span className="text-3xl group-hover:scale-110 transition-transform duration-300" aria-hidden="true">🛒</span>
+          <img 
+            src="/logo.svg" 
+            alt="Nest-Mart Logo" 
+            className="w-8 h-8 group-hover:scale-110 transition-transform duration-300"
+          />
           <div>
             <h1 className="text-xl font-bold leading-none text-heading group-hover:text-primary transition-colors" style={{ fontFamily: "'Quicksand', sans-serif" }}>
               Nest-Mart
             </h1>
-            <span className="text-[10px] text-text-body tracking-widest font-semibold uppercase">Grocery</span>
           </div>
         </Link>
 
@@ -51,12 +54,15 @@ const Header = () => {
           className="flex items-center gap-3 shrink-0 group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg p-2"
           aria-label="Nestmart Home"
         >
-          <span className="text-4xl group-hover:scale-110 transition-transform duration-300" aria-hidden="true">🛒</span>
+          <img 
+            src="/logo.svg" 
+            alt="Nest-Mart Logo" 
+            className="w-10 h-10 group-hover:scale-110 transition-transform duration-300"
+          />
           <div>
             <h1 className="text-2xl font-bold leading-none text-heading group-hover:text-primary transition-colors" style={{ fontFamily: "'Quicksand', sans-serif" }}>
               Nest-Mart
             </h1>
-            <span className="text-xs text-text-body tracking-widest font-semibold uppercase">Grocery</span>
           </div>
         </Link>
 
