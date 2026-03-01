@@ -113,16 +113,40 @@ const AdminProducts = () => {
         setShowModal(true);
     };
 
-    const openEdit = (p: Product) => {
-        setEditingProduct(p);
-        setFormData({
-            name: p.name, nameAr: p.nameAr, brand: p.brand, brandAr: p.brandAr, basePrice: p.basePrice, compareAtPrice: p.compareAtPrice,
-            badge: p.badge, badgeAr: p.badgeAr, discountPercent: p.discountPercent, categoryId: p.categoryId,
-            sku: p.sku, type: p.type, vendor: p.vendor, description: p.description, descriptionAr: p.descriptionAr, 
-            variants: p.variants, tags: p.tags || [],
-        });
-        setImageUrl(p.primaryImageUrl || "");
-        setShowModal(true);
+    const openEdit = async (p: Product) => {
+        try {
+            // Fetch full product details to ensure we have all data including variants
+            const res = await api.get(`/admin/products/${p.id}`);
+            const env = unwrapResponse(res.data);
+            const fullProduct = env.data;
+            
+            setEditingProduct(fullProduct);
+            setFormData({
+                name: fullProduct.name,
+                nameAr: fullProduct.nameAr,
+                brand: fullProduct.brand,
+                brandAr: fullProduct.brandAr,
+                basePrice: fullProduct.basePrice,
+                compareAtPrice: fullProduct.compareAtPrice,
+                badge: fullProduct.badge,
+                badgeAr: fullProduct.badgeAr,
+                discountPercent: fullProduct.discountPercent,
+                categoryId: fullProduct.categoryId,
+                sku: fullProduct.sku,
+                type: fullProduct.type,
+                vendor: fullProduct.vendor,
+                description: fullProduct.description,
+                descriptionAr: fullProduct.descriptionAr,
+                variants: fullProduct.variants && fullProduct.variants.length > 0 
+                    ? fullProduct.variants 
+                    : [{ sku: "", color: "Default", weight: 100, size: null, stockQuantity: 10, priceAdjustment: 0 }],
+                tags: fullProduct.tags || [],
+            });
+            setImageUrl(fullProduct.imageUrls?.[0] || fullProduct.primaryImageUrl || "");
+            setShowModal(true);
+        } catch (e) {
+            toast.error(t('products.loadFailed'));
+        }
     };
 
     const handleImageUpload = async (file: File) => {
@@ -384,13 +408,12 @@ const AdminProducts = () => {
                                 </div>
                                 <div>
                                     <label className="block text-xs font-medium text-slate-500 mb-1">Badge (English)</label>
-                                    <select value={formData.badge ?? ""} onChange={e => setFormData({ ...formData, badge: e.target.value || null })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary">
-                                        <option value="">None</option>
-                                        <option value="hot">Hot</option>
-                                        <option value="new">New</option>
-                                        <option value="sale">Sale</option>
-                                        <option value="discount">Discount</option>
-                                    </select>
+                                    <input 
+                                        value={formData.badge ?? ""} 
+                                        onChange={e => setFormData({ ...formData, badge: e.target.value || null })} 
+                                        className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" 
+                                        placeholder="Hot, New, Sale, Fresh, etc."
+                                    />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-medium text-slate-500 mb-1">Badge (Arabic)</label>
