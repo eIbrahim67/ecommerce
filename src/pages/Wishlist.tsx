@@ -53,7 +53,7 @@ const Wishlist = () => {
             <Header />
             <main className="flex-1 container mx-auto py-8 px-4">
                 <h1 className="text-2xl font-bold mb-6" style={{ fontFamily: "'Quicksand', sans-serif" }}>
-                    {t('wishlist:title')} {items.length > 0 && <span className="text-text-body font-normal text-lg">{t('wishlist:itemCount', { count: items.length })}</span>}
+                    {t('wishlist:title')} {items.length > 0 && <span className="text-text-body font-normal text-lg">({items.length})</span>}
                 </h1>
                 {items.length === 0 ? (
                     <div className="text-center py-16 bg-surface-light rounded-xl border border-border">

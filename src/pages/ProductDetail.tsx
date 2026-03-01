@@ -11,16 +11,9 @@ import { useWishlist } from "@/contexts/WishlistContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { api, unwrapResponse } from "@/lib/api";
 import { toast } from "sonner";
-import { ProductSummaryDto, ProductDetailDto, CategoryDto } from "@/types/api";
+import { ProductSummaryDto, ProductDetailDto, CategoryDto, ProductVariant } from "@/types/api";
 import { getLocalizedText, getLocalizedBadge } from "@/utils/localization";
 import { useLanguage } from "@/hooks/useLanguage";
-
-interface ProductVariantDto {
-  id: number;
-  variantName: string;
-  priceAdjustment: number;
-  stockQuantity: number;
-}
 
 interface ReviewDto {
   id: number;
@@ -32,7 +25,7 @@ interface ReviewDto {
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const { currentLanguage } = useLanguage();
+  const { currentLanguage, t } = useLanguage();
 
   const [product, setProduct] = useState<ProductDetailDto | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<ProductSummaryDto[]>([]);
@@ -42,7 +35,7 @@ const ProductDetail = () => {
   const [mainImage, setMainImage] = useState<string>("");
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariantDto | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
 
   const [reviews, setReviews] = useState<ReviewDto[]>([]);
   const [reviewRating, setReviewRating] = useState(5);
@@ -56,7 +49,6 @@ const ProductDetail = () => {
   const { isAuthenticated } = useAuth();
 
   const isWishlisted = product ? isInWishlist(product.id) : false;
-  const tabs = ["Description", "Additional info", "Vendor", "Reviews"];
 
   useEffect(() => {
     const fetchProductAndRelated = async () => {
@@ -117,11 +109,11 @@ const ProductDetail = () => {
   const submitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      toast.error("Please login to submit a review.");
+      toast.error(t('products:detail.loginToReview'));
       return;
     }
     if (!reviewComment.trim()) {
-      toast.error("Review comment is required.");
+      toast.error(t('products:detail.reviewRequired'));
       return;
     }
     try {
@@ -131,7 +123,7 @@ const ProductDetail = () => {
         comment: reviewComment,
       });
       unwrapResponse(res.data);
-      toast.success("Review submitted successfully!");
+      toast.success(t('products:detail.reviewSuccess'));
       setReviewComment("");
       setReviewRating(5);
       // reload reviews
@@ -198,8 +190,8 @@ const ProductDetail = () => {
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         <div className="flex-1 flex flex-col items-center justify-center">
-          <h2 className="text-2xl font-bold mb-4">Product not found</h2>
-          <Link to="/shop" className="text-primary hover:underline">Return to Shop</Link>
+          <h2 className="text-2xl font-bold mb-4">{t('products:detail.productNotFound')}</h2>
+          <Link to="/shop" className="text-primary hover:underline">{t('products:detail.returnToShop')}</Link>
         </div>
         <Footer />
       </div>
@@ -208,11 +200,11 @@ const ProductDetail = () => {
 
   // Calculate dynamic price based on selected variant
   const displayPrice = selectedVariant
-    ? product.basePrice + (selectedVariant.priceAdjustment || 0)
+    ? product.basePrice + (selectedVariant.additionalPrice || 0)
     : product.basePrice;
 
   const displayOriginalPrice = selectedVariant && product.compareAtPrice !== null
-    ? product.compareAtPrice + (selectedVariant.priceAdjustment || 0)
+    ? product.compareAtPrice + (selectedVariant.additionalPrice || 0)
     : (product.compareAtPrice || product.basePrice);
 
   // Get localized content
@@ -270,7 +262,7 @@ const ProductDetail = () => {
                       <Star key={i} className={`w-4 h-4 ${i < Math.round(product.averageRating || 0) ? "fill-brand-yellow text-brand-yellow" : "text-border"}`} />
                     ))}
                   </div>
-                  <span className="text-sm text-text-body">({product.reviewCount} reviews)</span>
+                  <span className="text-sm text-text-body">({product.reviewCount} {t('products:detail.reviews')})</span>
                 </div>
 
                 <div className="flex items-baseline gap-3 mb-4">
@@ -284,29 +276,32 @@ const ProductDetail = () => {
                   )}
                   {product.discountPercent !== null && product.discountPercent > 0 && (
                     <span className="badge-discount text-xs">
-                      {Math.round(product.discountPercent)}% Off
+                      {Math.round(product.discountPercent)}% {t('products:detail.off')}
                     </span>
                   )}
                 </div>
 
                 <p className="text-text-body text-sm leading-relaxed mb-4">
-                  {displayDescription || "No description provided."}
+                  {displayDescription || t('products:detail.noDescription')}
                 </p>
 
                 {/* Variants */}
                 {product.variants && product.variants.length > 0 && (
                   <div className="mb-4">
-                    <span className="text-sm font-medium text-text-body block mb-2">Options:</span>
+                    <span className="text-sm font-medium text-text-body block mb-2">{t('products:detail.options')}:</span>
                     <div className="flex flex-wrap gap-2">
-                      {product.variants.map((v) => (
-                        <button
-                          key={v.id}
-                          onClick={() => setSelectedVariant(v)}
-                          className={`text-sm px-3 py-1.5 rounded-md border transition-colors ${selectedVariant?.id === v.id ? "bg-primary text-primary-foreground border-primary" : "border-border text-text-body hover:border-primary"}`}
-                        >
-                          {v.variantName} {v.priceAdjustment > 0 ? `(+$${v.priceAdjustment.toFixed(2)})` : ""}
-                        </button>
-                      ))}
+                      {product.variants.map((v) => {
+                        const variantLabel = v.size || v.color || v.weight?.toString() || `Variant ${v.id}`;
+                        return (
+                          <button
+                            key={v.id}
+                            onClick={() => setSelectedVariant(v)}
+                            className={`text-sm px-3 py-1.5 rounded-md border transition-colors ${selectedVariant?.id === v.id ? "bg-primary text-primary-foreground border-primary" : "border-border text-text-body hover:border-primary"}`}
+                          >
+                            {variantLabel} {v.additionalPrice && v.additionalPrice > 0 ? `(+$${v.additionalPrice.toFixed(2)})` : ""}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -335,11 +330,11 @@ const ProductDetail = () => {
                     {isAddingToCart ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        Adding...
+                        {t('products:detail.adding')}
                       </>
                     ) : (
                       <>
-                        <ShoppingCart className="w-4 h-4" /> Add to cart
+                        <ShoppingCart className="w-4 h-4" /> {t('products:detail.addToCart')}
                       </>
                     )}
                   </button>
@@ -370,16 +365,16 @@ const ProductDetail = () => {
                 </div>
 
                 <div className="text-sm text-text-body space-y-1.5 pt-4 border-t border-border">
-                  <p>Brand: <span className="font-semibold">{displayBrand}</span></p>
-                  <p>Type: <span className="text-text-body">{product.type || "N/A"}</span></p>
-                  <p>Category: <Link to={`/shop?categoryId=${product.categoryId}`} className="text-primary hover:underline">Category #{product.categoryId}</Link></p>
-                  <p>SKU: <span>{product.sku || "N/A"}</span></p>
+                  <p>{t('products:detail.brand')}: <span className="font-semibold">{displayBrand}</span></p>
+                  <p>{t('products:detail.type')}: <span className="text-text-body">{product.type || "N/A"}</span></p>
+                  <p>{t('products:detail.category')}: <Link to={`/shop?categoryId=${product.categoryId}`} className="text-primary hover:underline">Category #{product.categoryId}</Link></p>
+                  <p>{t('products:detail.sku')}: <span>{product.sku || "N/A"}</span></p>
                   {product.tags && product.tags.length > 0 && (
-                    <p>Tags: <span className="text-primary">{product.tags.join(", ")}</span></p>
+                    <p>{t('products:detail.tags')}: <span className="text-primary">{product.tags.join(", ")}</span></p>
                   )}
                   {selectedVariant && (
-                    <p>Stock: <span className={selectedVariant.stockQuantity > 0 ? "text-brand-green font-semibold" : "text-red-500 font-semibold"}>
-                      {selectedVariant.stockQuantity > 0 ? `${selectedVariant.stockQuantity} Items In Stock` : "Out of Stock"}
+                    <p>{t('products:detail.stock')}: <span className={(selectedVariant.stockQuantity || 0) > 0 ? "text-brand-green font-semibold" : "text-red-500 font-semibold"}>
+                      {(selectedVariant.stockQuantity || 0) > 0 ? `${selectedVariant.stockQuantity} ${t('products:detail.itemsInStock')}` : t('products:detail.outOfStock')}
                     </span></p>
                   )}
                 </div>
@@ -389,39 +384,41 @@ const ProductDetail = () => {
             {/* Tabs */}
             <div className="border-b border-border mb-6">
               <div className="flex gap-6 overflow-x-auto">
-                {tabs.map((tab) => {
-                  const tabKey = tab.toLowerCase().split(" ")[0];
-                  return (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tabKey)}
-                      className={`pb-3 text-sm font-semibold border-b-2 whitespace-nowrap transition-colors ${activeTab === tabKey ? "border-primary text-primary" : "border-transparent text-text-body hover:text-primary"}`}
-                    >
-                      {tab} {tab === "Reviews" && `(${product.reviewCount})`}
-                    </button>
-                  );
-                })}
+                {[
+                  { key: 'description', label: t('products:detail.tabs.description') },
+                  { key: 'additional', label: t('products:detail.tabs.additionalInfo') },
+                  { key: 'vendor', label: t('products:detail.tabs.vendor') },
+                  { key: 'reviews', label: `${t('products:detail.tabs.reviews')} (${product.reviewCount})` }
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`pb-3 text-sm font-semibold border-b-2 whitespace-nowrap transition-colors ${activeTab === tab.key ? "border-primary text-primary" : "border-transparent text-text-body hover:text-primary"}`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
               </div>
             </div>
 
             <div className="prose prose-sm text-text-body max-w-none mb-12">
               {activeTab === "description" && (
                 <div>
-                  <p>{displayDescription || "No description provided."}</p>
+                  <p>{displayDescription || t('products:detail.noDescription')}</p>
                 </div>
               )}
               {activeTab === "vendor" && (
                 <div>
-                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>Vendor Information</h3>
-                  <p><strong>Vendor Name:</strong> {product.vendor || "N/A"}</p>
+                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('products:detail.vendorInfo')}</h3>
+                  <p><strong>{t('products:detail.vendorName')}:</strong> {product.vendor || "N/A"}</p>
                 </div>
               )}
               {activeTab === "reviews" && (
                 <div className="space-y-6">
-                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>Customer questions & answers</h3>
+                  <h3 className="text-xl font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('products:detail.customerQA')}</h3>
 
                   {reviews.length === 0 ? (
-                    <p>No reviews yet. Be the first to review this product!</p>
+                    <p>{t('products:detail.noReviews')}</p>
                   ) : (
                     <div className="space-y-6">
                       {reviews.map((r) => (
@@ -444,10 +441,10 @@ const ProductDetail = () => {
                   )}
 
                   <div className="mt-8 bg-surface-light p-6 rounded-xl border border-border">
-                    <h4 className="text-lg font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>Add a review</h4>
+                    <h4 className="text-lg font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('products:detail.addReview')}</h4>
                     <form onSubmit={submitReview} className="space-y-4">
                       <div>
-                        <label className="block text-sm font-semibold mb-2">Your Rating</label>
+                        <label className="block text-sm font-semibold mb-2">{t('products:detail.yourRating')}</label>
                         <div className="flex gap-1.5">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <Star
@@ -459,12 +456,12 @@ const ProductDetail = () => {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold mb-2">Your Review</label>
+                        <label className="block text-sm font-semibold mb-2">{t('products:detail.yourReview')}</label>
                         <textarea
                           value={reviewComment}
                           onChange={(e) => setReviewComment(e.target.value)}
                           className="w-full h-32 px-4 py-3 rounded-lg border border-border outline-none focus:border-primary resize-none"
-                          placeholder="Write your review here..."
+                          placeholder={t('products:detail.reviewPlaceholder')}
                         ></textarea>
                       </div>
                       <button
@@ -472,7 +469,7 @@ const ProductDetail = () => {
                         disabled={isSubmittingReview}
                         className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
                       >
-                        {isSubmittingReview ? "Submitting..." : "Submit Review"}
+                        {isSubmittingReview ? t('products:detail.submitting') : t('products:detail.submitReview')}
                       </button>
                     </form>
                   </div>
@@ -483,7 +480,7 @@ const ProductDetail = () => {
             {/* Related */}
             {relatedProducts.length > 0 && (
               <>
-                <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: "'Quicksand', sans-serif" }}>Related products</h2>
+                <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('products:detail.relatedProducts')}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {relatedProducts.map((p) => (
                     <ProductCard key={p.id} product={p} />
@@ -496,14 +493,14 @@ const ProductDetail = () => {
           {/* Sidebar */}
           <aside className="w-full lg:w-64 shrink-0 space-y-6">
             <div className="bg-card border border-border rounded-xl p-5">
-              <h3 className="font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>Category</h3>
+              <h3 className="font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('products:detail.category')}</h3>
               <ul className="space-y-3">
                 {categories.map((cat) => (
                   <li key={cat.id} className="flex items-center justify-between text-sm text-text-body hover:text-primary cursor-pointer transition-colors">
                     <Link to={`/shop?categoryId=${cat.id}`} className="flex items-center gap-2 flex-1">
-                      <span>{cat.icon || "🛒"}</span> {cat.name}
+                      <span>{cat.imageUrl || "🛒"}</span> {getLocalizedText(cat.name, cat.nameAr, currentLanguage)}
                     </Link>
-                    <span className="bg-surface-light text-xs px-2 py-0.5 rounded-full">{cat.count}</span>
+                    <span className="bg-surface-light text-xs px-2 py-0.5 rounded-full">{cat.productCount}</span>
                   </li>
                 ))}
               </ul>

@@ -33,5 +33,43 @@
   },
   "messages": {
     "noProducts": "No products found"
+  },
+  "detail": {
+    "reviews": "reviews",
+    "off": "Off",
+    "noDescription": "No description provided.",
+    "options": "Options",
+    "addToCart": "Add to cart",
+    "adding": "Adding...",
+    "brand": "Brand",
+    "type": "Type",
+    "category": "Category",
+    "sku": "SKU",
+    "tags": "Tags",
+    "stock": "Stock",
+    "itemsInStock": "Items In Stock",
+    "outOfStock": "Out of Stock",
+    "tabs": {
+      "description": "Description",
+      "additionalInfo": "Additional info",
+      "vendor": "Vendor",
+      "reviews": "Reviews"
+    },
+    "vendorInfo": "Vendor Information",
+    "vendorName": "Vendor Name",
+    "customerQA": "Customer questions & answers",
+    "noReviews": "No reviews yet. Be the first to review this product!",
+    "addReview": "Add a review",
+    "yourRating": "Your Rating",
+    "yourReview": "Your Review",
+    "reviewPlaceholder": "Write your review here...",
+    "submitReview": "Submit Review",
+    "submitting": "Submitting...",
+    "relatedProducts": "Related products",
+    "productNotFound": "Product not found",
+    "returnToShop": "Return to Shop",
+    "loginToReview": "Please login to submit a review.",
+    "reviewRequired": "Review comment is required.",
+    "reviewSuccess": "Review submitted successfully!"
   }
 }

@@ -109,7 +109,7 @@ const Contact = () => {
           <h3 className="text-xl font-bold mb-3" style={{ fontFamily: "'Quicksand', sans-serif" }}>{offices[0].title}</h3>
           <p className="text-sm text-text-body mb-1">{offices[0].address}</p>
           <p className="text-sm text-text-body mb-1">{offices[0].city}</p>
-          <p className="text-sm text-text-body mb-1">{t('contact:offices.phone')}: {offices[0].phone}</p>
+          <p className="text-sm text-text-body mb-1">{t('contact:offices.phone')}: <span dir="ltr">{offices[0].phone}</span></p>
           <p className="text-sm text-text-body mb-1">{t('contact:offices.email')}: {offices[0].email}</p>
           <p className="text-sm text-text-body mb-3">{t('contact:offices.workingHours')}: {offices[0].hours}</p>
           <a 

@@ -74,9 +74,9 @@ export interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const { i18n } = useTranslation();
   
-  // Initialize language from localStorage or default to English
+  // Initialize language from localStorage or default to Arabic
   const [currentLanguage, setCurrentLanguage] = useState<Locale>(() => {
-    return getStoredLanguage() || 'en';
+    return getStoredLanguage() || 'ar';
   });
 
   /**
@@ -139,12 +139,21 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     updateDocumentAttributes(currentLanguage);
   }, [currentLanguage, updateDocumentAttributes]);
 
+  // Set initial direction immediately on mount (before any async operations)
+  useEffect(() => {
+    const initialLang = getStoredLanguage() || 'ar';
+    updateDocumentAttributes(initialLang);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Initialize i18next language on mount
   useEffect(() => {
     const initLanguage = async () => {
       const storedLang = getStoredLanguage();
       if (storedLang && storedLang !== i18n.language) {
         await changeLanguage(storedLang);
+      } else if (!storedLang && i18n.language !== 'ar') {
+        // If no stored preference and i18n is not Arabic, set to Arabic
+        await changeLanguage('ar');
       }
     };
     

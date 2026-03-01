@@ -24,5 +24,6 @@
     "error": "An error occurred",
     "noResults": "No results found",
     "free": "Free"
-  }
+  },
+  "language": "Language"
 }

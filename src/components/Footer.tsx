@@ -33,7 +33,7 @@ const Footer = () => {
               className="flex items-center gap-3 hover:text-primary transition-colors"
             >
               <Phone className="w-5 h-5 text-primary shrink-0" /> 
-              <span>+201550162282</span>
+              <span dir="ltr">+201550162282</span>
             </a>
             <a 
               href="mailto:contact@nestmart.com"
@@ -115,7 +115,7 @@ const Footer = () => {
               className="flex items-center gap-2 hover:text-primary transition-colors"
             >
               <Phone className="w-4 h-4 text-primary" /> 
-              <strong>+201550162282</strong>
+              <strong dir="ltr">+201550162282</strong>
             </a>
           </div>
         </div>

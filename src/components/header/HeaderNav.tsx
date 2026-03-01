@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Phone, Menu, X, LogIn, UserPlus, User, Heart } from "lucide-react";
+import { Phone, Menu, X, LogIn, UserPlus, User, Heart, Globe } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -10,7 +10,7 @@ export const HeaderNav = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user, isAuthenticated } = useAuth();
     const { items: wishlistItems } = useWishlist();
-    const { t } = useLanguage();
+    const { t, currentLanguage, changeLanguage } = useLanguage();
 
     const navItems = [
         { name: t('navigation:header.home'), path: "/" },
@@ -64,7 +64,7 @@ export const HeaderNav = () => {
                             className="hidden lg:flex items-center gap-2 text-sm bg-surface-light px-5 py-2 rounded-full border border-border/50 hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-md"
                         >
                             <Phone className="w-4 h-4 text-primary" aria-hidden="true" />
-                            <span className="font-bold text-heading whitespace-nowrap" style={{ fontFamily: "'Quicksand', sans-serif" }}>+201550162282</span>
+                            <span className="font-bold text-heading whitespace-nowrap" style={{ fontFamily: "'Quicksand', sans-serif" }} dir="ltr">+201550162282</span>
                             <span className="text-text-body text-xs border-l border-border/50 pl-2 ml-1">{t('navigation:header.supportCenter')}</span>
                         </a>
                     </div>
@@ -115,6 +115,45 @@ export const HeaderNav = () => {
                                     </span>
                                 )}
                             </Link>
+                        </div>
+                        
+                        {/* Language Switcher */}
+                        <div className="pt-4 border-t-2 border-border/50">
+                            <div className="px-4 mb-2">
+                                <p className="text-xs font-semibold text-text-body uppercase tracking-wider">{t('common:language', 'Language')}</p>
+                            </div>
+                            <div className="space-y-2">
+                                <button
+                                    onClick={() => {
+                                        changeLanguage('en');
+                                        setIsMenuOpen(false);
+                                    }}
+                                    className={`w-full flex items-center gap-3 text-base font-bold px-4 py-3 rounded-xl transition-all ${
+                                        currentLanguage === 'en'
+                                            ? 'text-primary bg-primary/10 shadow-sm'
+                                            : 'text-text-body hover:text-primary hover:bg-surface-light'
+                                    }`}
+                                >
+                                    <Globe className="w-5 h-5" />
+                                    <span className="text-xl">en</span>
+                                    <span>English</span>
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        changeLanguage('ar');
+                                        setIsMenuOpen(false);
+                                    }}
+                                    className={`w-full flex items-center gap-3 text-base font-bold px-4 py-3 rounded-xl transition-all ${
+                                        currentLanguage === 'ar'
+                                            ? 'text-primary bg-primary/10 shadow-sm'
+                                            : 'text-text-body hover:text-primary hover:bg-surface-light'
+                                    }`}
+                                >
+                                    <Globe className="w-5 h-5" />
+                                    <span className="text-xl">ar</span>
+                                    <span>العربية</span>
+                                </button>
+                            </div>
                         </div>
                         
                         {/* Auth Section */}
