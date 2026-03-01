@@ -1,0 +1,44 @@
+{
+  "pageTitle": "طلباتي",
+  "pageDescription": "عرض وتتبع جميع طلباتك",
+  "loading": "جاري تحميل طلباتك...",
+  "noOrders": {
+    "title": "لا توجد طلبات بعد",
+    "description": "ابدأ التسوق لإنشاء طلبك الأول",
+    "button": "ابدأ التسوق"
+  },
+  "orderCard": {
+    "orderNumber": "طلب #",
+    "orderDate": "تاريخ الطلب",
+    "items": "عناصر",
+    "item": "عنصر",
+    "total": "الإجمالي",
+    "shippingTo": "الشحن إلى",
+    "orderItems": "عناصر الطلب",
+    "more": "المزيد"
+  },
+  "orderDetail": {
+    "title": "طلب",
+    "notFound": "الطلب غير موجود",
+    "notFoundDescription": "الطلب الذي تبحث عنه غير موجود.",
+    "backToOrders": "العودة إلى الطلبات",
+    "orderStatus": "حالة الطلب",
+    "orderedOn": "تم الطلب في",
+    "orderItems": "عناصر الطلب",
+    "quantity": "الكمية",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "free": "مجاني",
+    "total": "الإجمالي",
+    "shippingAddress": "عنوان الشحن",
+    "contactInformation": "معلومات الاتصال",
+    "orderId": "رقم الطلب"
+  },
+  "status": {
+    "pending": "قيد الانتظار",
+    "processing": "قيد المعالجة",
+    "shipped": "تم الشحن",
+    "delivered": "تم التوصيل",
+    "cancelled": "ملغي"
+  }
+}

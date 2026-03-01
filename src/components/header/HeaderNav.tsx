@@ -1,18 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
-import { Phone, Menu, X, LogIn, UserPlus, User } from "lucide-react";
+import { Phone, Menu, X, LogIn, UserPlus, User, Heart } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWishlist } from "@/contexts/WishlistContext";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export const HeaderNav = () => {
     const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user, isAuthenticated } = useAuth();
+    const { items: wishlistItems } = useWishlist();
+    const { t } = useLanguage();
 
     const navItems = [
-        { name: "Home", path: "/" },
-        { name: "Shop", path: "/shop" },
-        { name: "Contact", path: "/contact" },
-        { name: "About", path: "/about" },
+        { name: t('navigation:header.home'), path: "/" },
+        { name: t('navigation:header.shop'), path: "/shop" },
+        { name: t('navigation:header.contact'), path: "/contact" },
+        { name: t('navigation:header.about'), path: "/about" },
     ];
 
     return (
@@ -55,14 +59,14 @@ export const HeaderNav = () => {
                     </nav>
 
                     <div className="flex items-center gap-4">
-                        <button className="hidden sm:flex items-center gap-1.5 text-sm font-bold text-text-body hover:text-primary transition-all duration-300 bg-surface-light px-4 py-2 rounded-full border border-border/50 hover:border-primary/30 shadow-sm hover:shadow-md cursor-pointer">
-                            🌐 العربية
-                        </button>
-                        <div className="hidden lg:flex items-center gap-2 text-sm bg-surface-light px-5 py-2 rounded-full border border-border/50 hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-md cursor-default">
+                        <a 
+                            href="tel:+201550162282"
+                            className="hidden lg:flex items-center gap-2 text-sm bg-surface-light px-5 py-2 rounded-full border border-border/50 hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-md"
+                        >
                             <Phone className="w-4 h-4 text-primary" aria-hidden="true" />
-                            <span className="font-bold text-heading whitespace-nowrap" style={{ fontFamily: "'Quicksand', sans-serif" }}>1900 - 888</span>
-                            <span className="text-text-body text-xs border-l border-border/50 pl-2 ml-1">24/7 Support Center</span>
-                        </div>
+                            <span className="font-bold text-heading whitespace-nowrap" style={{ fontFamily: "'Quicksand', sans-serif" }}>+201550162282</span>
+                            <span className="text-text-body text-xs border-l border-border/50 pl-2 ml-1">{t('navigation:header.supportCenter')}</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -94,6 +98,25 @@ export const HeaderNav = () => {
                             })}
                         </ul>
                         
+                        {/* Wishlist Link - Mobile Only */}
+                        <div className="pt-4 border-t-2 border-border/50">
+                            <Link
+                                to="/wishlist"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center justify-between text-base font-bold px-4 py-3 rounded-xl text-text-body hover:text-primary hover:bg-surface-light transition-all"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <Heart className="w-5 h-5" />
+                                    <span>{t('navigation:header.wishlist')}</span>
+                                </div>
+                                {wishlistItems.length > 0 && (
+                                    <span className="bg-primary text-primary-foreground text-xs min-w-[20px] h-[20px] rounded-full flex items-center justify-center font-bold px-1.5">
+                                        {wishlistItems.length}
+                                    </span>
+                                )}
+                            </Link>
+                        </div>
+                        
                         {/* Auth Section */}
                         <div className="pt-4 border-t-2 border-border/50">
                             {isAuthenticated ? (
@@ -107,7 +130,7 @@ export const HeaderNav = () => {
                                     </div>
                                     <div>
                                         <p className="font-bold text-heading">{user?.name}</p>
-                                        <p className="text-xs text-text-body">View Account</p>
+                                        <p className="text-xs text-text-body">{t('navigation:header.account')}</p>
                                     </div>
                                 </Link>
                             ) : (
@@ -117,24 +140,20 @@ export const HeaderNav = () => {
                                         onClick={() => setIsMenuOpen(false)}
                                         className="flex items-center justify-center gap-2 text-base font-bold px-4 py-3 rounded-xl text-text-body hover:text-primary hover:bg-surface-light transition-all border-2 border-border"
                                     >
-                                        <LogIn className="w-5 h-5" /> Sign In
+                                        <LogIn className="w-5 h-5" /> {t('common:buttons.login')}
                                     </Link>
                                     <Link
                                         to="/register"
                                         onClick={() => setIsMenuOpen(false)}
                                         className="flex items-center justify-center gap-2 text-base font-bold px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md"
                                     >
-                                        <UserPlus className="w-5 h-5" /> Sign Up
+                                        <UserPlus className="w-5 h-5" /> {t('common:buttons.register')}
                                     </Link>
                                 </div>
                             )}
                         </div>
                         
-                        <div className="mt-6 pt-4 border-t-2 border-border/50">
-                            <button className="w-full flex items-center justify-center gap-2 text-sm font-bold text-text-body hover:text-primary transition-all duration-300 bg-surface-light px-4 py-3 rounded-xl border-2 border-border/50 hover:border-primary/30">
-                                🌐 Switch to Arabic (العربية)
-                            </button>
-                        </div>
+
                     </nav>
                 </div>
             )}

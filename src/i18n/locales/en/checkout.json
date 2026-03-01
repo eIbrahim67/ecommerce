@@ -1,0 +1,64 @@
+{
+  "title": "Secure Checkout",
+  "emptyCart": {
+    "title": "Checkout not available.",
+    "message": "Your cart is empty. Please add items before checking out.",
+    "returnToShop": "Return to Shop"
+  },
+  "paymentMethod": {
+    "title": "Payment Method",
+    "card": {
+      "title": "Debit/Credit Card",
+      "description": "Pay securely with your card"
+    },
+    "cod": {
+      "title": "Cash on Delivery",
+      "description": "Pay when you receive"
+    }
+  },
+  "shippingInfo": {
+    "title": "Shipping Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "address": "Street Address",
+    "addressPlaceholder": "House number and street name",
+    "city": "Town / City",
+    "zipCode": "Zip Code",
+    "required": "*"
+  },
+  "orderDetails": {
+    "title": "Order Details",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shippingFree": "Free",
+    "codFee": "Cash on Delivery Fee",
+    "total": "Total"
+  },
+  "buttons": {
+    "placeOrder": "Place Order",
+    "proceedToPayment": "Proceed to Payment",
+    "processing": "Processing..."
+  },
+  "security": {
+    "codCheckout": "Secure checkout - Pay on delivery",
+    "paymobCheckout": "Secure payment powered by Paymob"
+  },
+  "validation": {
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "emailRequired": "Valid email is required",
+    "phoneRequired": "Valid phone number is required",
+    "addressRequired": "Address must be at least 5 characters",
+    "cityRequired": "City is required",
+    "zipCodeRequired": "Valid zip code is required"
+  },
+  "messages": {
+    "orderCreated": "Order created successfully!",
+    "codSuccess": "Order placed! You'll pay on delivery.",
+    "preparingPayment": "Preparing payment...",
+    "paymentFailed": "Failed to initialize payment. Please try again.",
+    "checkoutFailed": "Failed to process checkout. Please try again."
+  }
+}

@@ -5,8 +5,10 @@ import Footer from "@/components/Footer";
 import { useOrders } from "@/hooks/useOrders";
 import { formatCurrency, formatOrderDate, getStatusColor } from "@/lib/orderService";
 import { Package, ChevronRight, Calendar, DollarSign } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Orders = () => {
+    const { t } = useTranslation('orders');
     const { orders, loading, error, fetchOrders } = useOrders();
 
     useEffect(() => {
@@ -21,7 +23,7 @@ const Orders = () => {
                     <div className="flex items-center justify-center">
                         <div className="flex flex-col items-center gap-4">
                             <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary/30 border-t-primary"></div>
-                            <p className="text-text-body font-medium">Loading your orders...</p>
+                            <p className="text-text-body font-medium">{t('loading')}</p>
                         </div>
                     </div>
                 </main>
@@ -42,9 +44,9 @@ const Orders = () => {
                         </div>
                         <div>
                             <h1 className="text-4xl font-bold" style={{ fontFamily: "'Quicksand', sans-serif" }}>
-                                My Orders
+                                {t('pageTitle')}
                             </h1>
-                            <p className="text-text-body mt-1">View and track all your orders</p>
+                            <p className="text-text-body mt-1">{t('pageDescription')}</p>
                         </div>
                     </div>
                 </div>
@@ -63,14 +65,14 @@ const Orders = () => {
                         <div className="w-24 h-24 bg-surface-light rounded-full flex items-center justify-center mx-auto mb-6">
                             <Package className="w-12 h-12 text-text-body/30" />
                         </div>
-                        <h2 className="text-2xl font-bold mb-3" style={{ fontFamily: "'Quicksand', sans-serif" }}>No Orders Yet</h2>
-                        <p className="text-text-body mb-8 text-lg">Start shopping to create your first order</p>
+                        <h2 className="text-2xl font-bold mb-3" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('noOrders.title')}</h2>
+                        <p className="text-text-body mb-8 text-lg">{t('noOrders.description')}</p>
                         <Link
                             to="/shop"
                             className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-xl font-bold hover:scale-105 transition-all shadow-lg"
                         >
                             <Package className="w-5 h-5" />
-                            Start Shopping
+                            {t('noOrders.button')}
                         </Link>
                     </div>
                 ) : (
@@ -85,30 +87,30 @@ const Orders = () => {
                                     {/* Left Section */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-3 mb-4">
-                                            <h3 className="text-xl font-bold" style={{ fontFamily: "'Quicksand', sans-serif" }}>Order #{order.id}</h3>
+                                            <h3 className="text-xl font-bold" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('orderCard.orderNumber')}{order.id}</h3>
                                             <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase ${getStatusColor(order.status)}`}>
-                                                {order.status}
+                                                {t(`status.${order.status.toLowerCase()}`)}
                                             </span>
                                         </div>
                                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                             <div className="flex items-center gap-3 text-text-body bg-surface-light px-4 py-3 rounded-xl">
                                                 <Calendar className="w-5 h-5 flex-shrink-0 text-primary" />
                                                 <div>
-                                                    <p className="text-xs font-medium text-text-body/70">Order Date</p>
+                                                    <p className="text-xs font-medium text-text-body/70">{t('orderCard.orderDate')}</p>
                                                     <p className="font-semibold text-heading text-sm">{formatOrderDate(order.orderDate)}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3 text-text-body bg-surface-light px-4 py-3 rounded-xl">
                                                 <Package className="w-5 h-5 flex-shrink-0 text-primary" />
                                                 <div>
-                                                    <p className="text-xs font-medium text-text-body/70">Items</p>
-                                                    <p className="font-semibold text-heading text-sm">{order.items.length} item{order.items.length !== 1 ? "s" : ""}</p>
+                                                    <p className="text-xs font-medium text-text-body/70">{t('orderCard.items')}</p>
+                                                    <p className="font-semibold text-heading text-sm">{order.items.length} {order.items.length !== 1 ? t('orderCard.items') : t('orderCard.item')}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3 bg-primary/10 px-4 py-3 rounded-xl">
                                                 <DollarSign className="w-5 h-5 flex-shrink-0 text-primary" />
                                                 <div>
-                                                    <p className="text-xs font-medium text-primary/70">Total</p>
+                                                    <p className="text-xs font-medium text-primary/70">{t('orderCard.total')}</p>
                                                     <p className="font-bold text-primary text-lg">{formatCurrency(order.totalAmount)}</p>
                                                 </div>
                                             </div>
@@ -118,7 +120,7 @@ const Orders = () => {
                                     {/* Right Section */}
                                     <div className="flex items-center justify-between md:justify-end gap-4">
                                         <div className="text-right hidden md:block bg-surface-light px-5 py-3 rounded-xl">
-                                            <p className="text-xs text-text-body font-medium mb-1">Shipping to</p>
+                                            <p className="text-xs text-text-body font-medium mb-1">{t('orderCard.shippingTo')}</p>
                                             <p className="text-sm font-bold text-heading truncate max-w-[200px]">
                                                 {order.city}, {order.zipCode}
                                             </p>
@@ -131,7 +133,7 @@ const Orders = () => {
 
                                 {/* Item Preview */}
                                 <div className="mt-6 pt-6 border-t-2 border-border/50">
-                                    <p className="text-xs font-semibold text-text-body mb-3 uppercase tracking-wide">Order Items</p>
+                                    <p className="text-xs font-semibold text-text-body mb-3 uppercase tracking-wide">{t('orderCard.orderItems')}</p>
                                     <div className="flex flex-wrap gap-2">
                                         {order.items.slice(0, 3).map((item, idx) => (
                                             <span
@@ -143,7 +145,7 @@ const Orders = () => {
                                         ))}
                                         {order.items.length > 3 && (
                                             <span className="text-sm bg-primary/10 text-primary font-bold px-4 py-2 rounded-lg border border-primary/20">
-                                                +{order.items.length - 3} more
+                                                +{order.items.length - 3} {t('orderCard.more')}
                                             </span>
                                         )}
                                     </div>

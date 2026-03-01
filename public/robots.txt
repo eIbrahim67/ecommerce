@@ -1,14 +1,13 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
+# Nest-Mart Robots.txt
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /account/
+Disallow: /checkout/
+Disallow: /orders/
+
+# Sitemap
+Sitemap: https://ecommerce-nest-mart.vercel.app/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1

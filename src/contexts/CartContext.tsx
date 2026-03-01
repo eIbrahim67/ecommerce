@@ -8,6 +8,7 @@ export interface CartItem {
     productId: number;
     variantId: number | null;
     productName: string;
+    productNameAr?: string | null;
     variantName: string | null;
     imageUrl: string;
     unitPrice: number;

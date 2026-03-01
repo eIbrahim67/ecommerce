@@ -1,0 +1,48 @@
+{
+  "hero": {
+    "badge": "Special Offer",
+    "title": "Fresh Vegetables",
+    "titleHighlight": "Big Discount",
+    "description": "Save up to 50% on organic produce. Shop now for the freshest deals!",
+    "shopNow": "Shop Now"
+  },
+  "features": {
+    "freeShipping": {
+      "title": "Free Shipping",
+      "description": "On orders over $50"
+    },
+    "securePayment": {
+      "title": "Secure Payment",
+      "description": "100% protected"
+    },
+    "bestPrices": {
+      "title": "Best Prices",
+      "description": "Guaranteed low prices"
+    },
+    "support": {
+      "title": "24/7 Support",
+      "description": "Dedicated support"
+    }
+  },
+  "popularProducts": {
+    "title": "Popular Products",
+    "subtitle": "Discover our best-selling items",
+    "all": "All",
+    "noProducts": "No products found"
+  },
+  "categories": {
+    "title": "Shop by Categories",
+    "subtitle": "Explore our wide range of fresh and organic products",
+    "items": "items"
+  },
+  "newsletter": {
+    "badge": "Newsletter",
+    "title": "Stay home & get your daily needs from our shop",
+    "subtitle": "Start Your Daily Shopping with",
+    "placeholder": "Enter your email address",
+    "subscribe": "Subscribe Now",
+    "subscribing": "Subscribing...",
+    "successMessage": "Successfully subscribed to the newsletter!",
+    "errorMessage": "Failed to subscribe. Please try again."
+  }
+}

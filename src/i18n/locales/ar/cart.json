@@ -1,0 +1,26 @@
+{
+  "title": "سلة التسوق",
+  "emptyTitle": "سلتك فارغة",
+  "emptyMessage": "يبدو أنك لم تضف أي عناصر إلى السلة بعد.",
+  "startShopping": "ابدأ التسوق",
+  "itemsCount": "{{count}} عناصر في سلتك",
+  "itemsCount_one": "{{count}} عنصر في سلتك",
+  "labels": {
+    "product": "المنتج",
+    "unitPrice": "سعر الوحدة",
+    "quantity": "الكمية",
+    "subtotal": "المجموع الفرعي",
+    "total": "الإجمالي",
+    "remove": "إزالة",
+    "variant": "النوع"
+  },
+  "summary": {
+    "title": "ملخص الطلب",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "tax": "الضريبة",
+    "total": "الإجمالي",
+    "proceedToCheckout": "المتابعة للدفع",
+    "continueShopping": "متابعة التسوق"
+  }
+}

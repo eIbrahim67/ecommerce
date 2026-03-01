@@ -1,0 +1,54 @@
+{
+  "pageTitle": "اتصل بنا",
+  "pageDescription": "تواصل معنا لأي أسئلة أو استفسارات",
+  "helpSection": {
+    "subtitle": "كيف يمكننا مساعدتك؟",
+    "title": "أخبرنا كيف يمكننا مساعدتك",
+    "description": "نحن دائماً سعداء بالاستماع إليك. لا تتردد في الاتصال بنا بخصوص أي أسئلة أو استفسارات."
+  },
+  "helpItems": {
+    "visitFeedback": {
+      "title": "ملاحظات الزيارة",
+      "description": "أخبرنا عن تجربتك في المتجر."
+    },
+    "employerServices": {
+      "title": "خدمات الشركات",
+      "description": "للاستفسارات المؤسسية والطلبات بالجملة."
+    },
+    "billingInquiries": {
+      "title": "استفسارات الفواتير",
+      "description": "أسئلة تتعلق بالمدفوعات والفواتير."
+    },
+    "generalInquiries": {
+      "title": "استفسارات عامة",
+      "description": "أي شيء آخر تريد الاستفسار عنه."
+    }
+  },
+  "map": {
+    "placeholder": "عنصر نائب للخريطة"
+  },
+  "offices": {
+    "office": "المكتب",
+    "studio": "الاستوديو",
+    "shop": "المتجر",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "viewMap": "عرض الخريطة",
+    "workingHours": "ساعات العمل",
+    "hours24": "مفتوح 24 ساعة، جميع الأيام"
+  },
+  "form": {
+    "subtitle": "نموذج الاتصال",
+    "title": "راسلنا",
+    "namePlaceholder": "اسمك *",
+    "emailPlaceholder": "بريدك الإلكتروني *",
+    "phonePlaceholder": "هاتفك",
+    "subjectPlaceholder": "الموضوع",
+    "messagePlaceholder": "رسالتك... *",
+    "sendButton": "إرسال الرسالة",
+    "sending": "جاري الإرسال...",
+    "successMessage": "تم إرسال رسالتك بنجاح!",
+    "errorMessage": "فشل إرسال الرسالة. يرجى المحاولة مرة أخرى لاحقاً.",
+    "requiredFields": "يرجى ملء الحقول المطلوبة (الاسم، البريد الإلكتروني، الرسالة)."
+  }
+}

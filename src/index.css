@@ -73,10 +73,35 @@
     font-family: 'Lato', sans-serif;
   }
 
+  /* Arabic font support */
+  body.font-arabic {
+    font-family: 'Cairo', sans-serif;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+  }
+
+  body.font-english {
+    font-family: 'Lato', sans-serif;
+    line-height: 1.5;
+    letter-spacing: normal;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-bold;
     font-family: 'Quicksand', sans-serif;
     color: hsl(var(--text-heading));
+  }
+
+  /* Arabic headings */
+  body.font-arabic h1,
+  body.font-arabic h2,
+  body.font-arabic h3,
+  body.font-arabic h4,
+  body.font-arabic h5,
+  body.font-arabic h6 {
+    font-family: 'Cairo', sans-serif;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
   }
 }
 

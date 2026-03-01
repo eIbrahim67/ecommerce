@@ -1,0 +1,37 @@
+{
+  "allCategories": "All Categories",
+  "allProducts": "All Products",
+  "shopByCategory": "Shop by Category",
+  "findWhatYouNeed": "Find exactly what you're looking for",
+  "filterByPrice": "Filter by Price",
+  "clearAllFilters": "Clear All Filters",
+  "weFound": "We found",
+  "itemsForYou": "items for you!",
+  "noProductsFound": "No products found",
+  "tryAdjustingFilters": "Try adjusting your filters or search query.",
+  "from": "From",
+  "to": "To",
+  "badges": {
+    "sale": "Sale",
+    "hot": "Hot",
+    "new": "New",
+    "discount": "Discount"
+  },
+  "labels": {
+    "category": "Category",
+    "price": "Price",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock"
+  },
+  "sorting": {
+    "sortBy": "Sort by",
+    "featured": "Featured",
+    "newest": "Newest",
+    "priceLowToHigh": "Price: Low to High",
+    "priceHighToLow": "Price: High to Low",
+    "topRated": "Top Rated"
+  },
+  "messages": {
+    "noProducts": "No products found"
+  }
+}

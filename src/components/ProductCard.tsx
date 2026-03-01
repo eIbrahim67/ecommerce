@@ -2,25 +2,20 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, Star } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
-
-export interface ProductSummaryDto {
-  id: number;
-  name: string;
-  brand: string;
-  basePrice: number;
-  compareAtPrice: number | null;
-  badge: "hot" | "new" | "sale" | "discount" | null;
-  discountPercent: number | null;
-  averageRating: number;
-  reviewCount: number;
-  categoryId: number;
-  primaryImageUrl: string;
-  variants?: any[];
-}
+import { useLanguage } from "@/hooks/useLanguage";
+import { formatCurrency } from "@/i18n/formatters";
+import { ProductSummaryDto } from "@/types/api";
+import { getLocalizedText, getLocalizedBadge } from "@/utils/localization";
 
 const ProductCard = ({ product }: { product: ProductSummaryDto }) => {
   const { addToCart } = useCart();
   const [isAdding, setIsAdding] = useState(false);
+  const { t, currentLanguage } = useLanguage();
+
+  // Get localized content
+  const displayName = getLocalizedText(product.name, product.nameAr, currentLanguage);
+  const displayBrand = getLocalizedText(product.brand, product.brandAr, currentLanguage);
+  const displayBadge = getLocalizedBadge(product.badge, product.badgeAr, currentLanguage);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -41,22 +36,23 @@ const ProductCard = ({ product }: { product: ProductSummaryDto }) => {
       <Link to={`/product/${product.id}`} className="block relative aspect-square rounded-xl overflow-hidden mb-4 bg-gradient-to-br from-surface-light to-white border border-border/50">
         <img
           src={product.primaryImageUrl}
-          alt={product.name}
+          alt={displayName}
           className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute top-2 left-2 flex flex-col gap-1.5">
-          {product.badge === "sale" && <span className="badge-sale shadow-lg">Sale</span>}
-          {product.badge === "hot" && <span className="badge-discount bg-red-500 text-white shadow-lg">🔥 Hot</span>}
-          {product.badge === "new" && <span className="badge-discount bg-brand-green text-primary-foreground shadow-lg">✨ New</span>}
+          {displayBadge && product.badge === "sale" && <span className="badge-sale shadow-lg">{displayBadge}</span>}
+          {displayBadge && product.badge === "hot" && <span className="badge-discount bg-red-500 text-white shadow-lg">🔥 {displayBadge}</span>}
+          {displayBadge && product.badge === "new" && <span className="badge-discount bg-brand-green text-primary-foreground shadow-lg">✨ {displayBadge}</span>}
+          {displayBadge && product.badge === "discount" && <span className="badge-discount shadow-lg">{displayBadge}</span>}
           {product.discountPercent !== null && product.discountPercent > 0 && <span className="badge-discount shadow-lg">-{Math.round(product.discountPercent)}%</span>}
         </div>
       </Link>
 
       <div className="relative z-10">
-        <div className="text-xs text-text-body mb-1.5 font-medium uppercase tracking-wide" style={{ fontFamily: "'Quicksand', sans-serif" }}>{product.brand}</div>
+        <div className="text-xs text-text-body mb-1.5 font-medium uppercase tracking-wide" style={{ fontFamily: "'Quicksand', sans-serif" }}>{displayBrand}</div>
         <Link to={`/product/${product.id}`}>
           <h3 className="font-bold text-heading leading-tight mb-2.5 hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]" style={{ fontFamily: "'Quicksand', sans-serif" }}>
-            {product.name}
+            {displayName}
           </h3>
         </Link>
 
@@ -70,10 +66,12 @@ const ProductCard = ({ product }: { product: ProductSummaryDto }) => {
 
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/50">
           <div className="flex flex-col gap-1">
-            <span className="text-xl font-bold text-primary" style={{ fontFamily: "'Quicksand', sans-serif" }}>${product.basePrice !== undefined ? product.basePrice.toFixed(2) : "0.00"}</span>
+            <span className="text-xl font-bold text-primary" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+              {formatCurrency(product.basePrice !== undefined ? product.basePrice : 0, currentLanguage, 'USD')}
+            </span>
             {product.compareAtPrice !== null && product.compareAtPrice > product.basePrice && (
               <span className="text-xs text-text-price-old line-through font-medium">
-                ${product.compareAtPrice.toFixed(2)}
+                {formatCurrency(product.compareAtPrice, currentLanguage, 'USD')}
               </span>
             )}
           </div>

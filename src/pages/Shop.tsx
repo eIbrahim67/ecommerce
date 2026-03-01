@@ -1,23 +1,20 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsletterBanner from "@/components/NewsletterBanner";
-import ProductCard, { ProductSummaryDto } from "@/components/ProductCard";
+import ProductCard from "@/components/ProductCard";
 import { ShopProductListSkeleton, SidebarSkeleton } from "@/components/SkeletonLoader";
 import SEO from "@/components/SEO";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { api, unwrapResponse } from "@/lib/api";
-
-interface CategoryDto {
-  id: number;
-  name: string;
-  imageUrl: string | null;
-  productCount: number;
-}
+import { ProductSummaryDto, CategoryDto } from "@/types/api";
+import { getLocalizedText } from "@/utils/localization";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const Shop = () => {
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
+  const { currentLanguage, t } = useLanguage();
 
   const [sortBy, setSortBy] = useState("featured");
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
@@ -101,8 +98,10 @@ const Shop = () => {
       {/* Category Links replacing static breadcrumb links */}
       <section className="bg-gradient-to-br from-surface-light to-white py-10 border-b border-border/50">
         <div className="container mx-auto px-4 xl:px-0 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-heading" style={{ fontFamily: "'Quicksand', sans-serif" }}>Shop by Category</h2>
-          <p className="text-text-body mb-8 text-lg">Find exactly what you're looking for</p>
+          <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-heading" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+            {t('products:shopByCategory')}
+          </h2>
+          <p className="text-text-body mb-8 text-lg">{t('products:findWhatYouNeed')}</p>
           {isCategoriesLoading ? (
             <div className="flex flex-wrap justify-center gap-3">
               {[...Array(6)].map((_, i) => (
@@ -115,7 +114,7 @@ const Shop = () => {
                 onClick={() => { setSelectedCategoryId(null); setCurrentPage(1); }}
                 className={`text-sm font-bold px-7 py-3 rounded-full transition-all duration-300 ${!selectedCategoryId ? "bg-primary text-primary-foreground shadow-xl scale-110" : "bg-white text-text-body border-2 border-border/50 hover:border-primary hover:text-primary hover:scale-105 hover:shadow-lg"}`}
               >
-                All Products
+                {t('products:allProducts')}
               </button>
               {categories.slice(0, 5).map((cat) => (
                 <button
@@ -123,7 +122,7 @@ const Shop = () => {
                   onClick={() => { setSelectedCategoryId(selectedCategoryId === cat.id ? null : cat.id); setCurrentPage(1); }}
                   className={`text-sm font-bold px-7 py-3 rounded-full transition-all duration-300 ${selectedCategoryId === cat.id ? "bg-primary text-primary-foreground shadow-xl scale-110" : "bg-white text-text-body border-2 border-border/50 hover:border-primary hover:text-primary hover:scale-105 hover:shadow-lg"}`}
                 >
-                  {cat.name}
+                  {getLocalizedText(cat.name, cat.nameAr, currentLanguage)}
                 </button>
               ))}
             </div>
@@ -139,7 +138,9 @@ const Shop = () => {
           ) : (
             <aside className="w-full lg:w-72 shrink-0 space-y-6">
               <div className="bg-gradient-to-br from-white to-surface-light border border-border rounded-2xl p-6 shadow-lg">
-                <h3 className="font-bold mb-5 text-lg" style={{ fontFamily: "'Quicksand', sans-serif" }}>Category</h3>
+                <h3 className="font-bold mb-5 text-lg" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+                  {t('products:labels.category')}
+                </h3>
                 <ul className="space-y-3">
                   {categories.map((cat) => (
                     <li
@@ -147,7 +148,7 @@ const Shop = () => {
                       onClick={() => { setSelectedCategoryId(selectedCategoryId === cat.id ? null : cat.id); setCurrentPage(1); }}
                       className={`flex items-center justify-between text-sm cursor-pointer transition-all p-3 rounded-xl ${selectedCategoryId === cat.id ? "text-primary font-bold bg-primary/10 scale-105" : "text-text-body hover:text-primary hover:bg-surface-light"}`}
                     >
-                      <span className="flex items-center gap-3"><span className="text-xl">{cat.imageUrl || "🛒"}</span> {cat.name}</span>
+                      <span className="flex items-center gap-3"><span className="text-xl">{cat.imageUrl || "🛒"}</span> {getLocalizedText(cat.name, cat.nameAr, currentLanguage)}</span>
                       <span className="bg-white text-xs px-3 py-1 rounded-full text-text-body font-semibold shadow-sm">{cat.productCount}</span>
                     </li>
                   ))}
@@ -155,7 +156,9 @@ const Shop = () => {
               </div>
 
               <div className="bg-gradient-to-br from-white to-surface-light border border-border rounded-2xl p-6 shadow-lg">
-                <h3 className="font-bold mb-5 text-lg" style={{ fontFamily: "'Quicksand', sans-serif" }}>Filter by Price</h3>
+                <h3 className="font-bold mb-5 text-lg" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+                  {t('products:filterByPrice')}
+                </h3>
                 <input
                   type="range"
                   className="w-full accent-primary pointer-events-auto h-2 rounded-full"
@@ -166,15 +169,15 @@ const Shop = () => {
                   onChange={(e) => { setPriceRange(Number(e.target.value)); setCurrentPage(1); }}
                 />
                 <div className="flex justify-between text-sm text-text-body mt-3 font-semibold">
-                  <span>From: $0</span>
-                  <span className="text-primary text-base">To: ${priceRange}</span>
+                  <span>{t('products:from')}: $0</span>
+                  <span className="text-primary text-base">{t('products:to')}: ${priceRange}</span>
                 </div>
 
                 <button
                   className="mt-6 w-full bg-primary text-primary-foreground py-3 rounded-xl text-sm font-bold hover:bg-primary/90 hover:scale-105 transition-all shadow-md"
                   onClick={() => { setSelectedCategoryId(null); setPriceRange(500); setCurrentPage(1); }}
                 >
-                  Clear All Filters
+                  {t('products:clearAllFilters')}
                 </button>
               </div>
             </aside>
@@ -183,18 +186,20 @@ const Shop = () => {
           {/* Product grid */}
           <main className="flex-1">
             <div className="flex items-center justify-between mb-8 bg-white border border-border rounded-2xl p-5 shadow-sm">
-              <p className="text-sm text-text-body">We found <span className="text-primary font-bold text-lg">{totalItems}</span> items for you!</p>
+              <p className="text-sm text-text-body">
+                {t('products:weFound')} <span className="text-primary font-bold text-lg">{totalItems}</span> {t('products:itemsForYou')}
+              </p>
               <div className="flex items-center gap-3">
                 <select
                   value={sortBy}
                   onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
                   className="text-sm border-2 border-border rounded-xl px-4 py-2.5 outline-none focus:border-primary font-semibold transition-all"
                 >
-                  <option value="featured">Sort by: Featured</option>
-                  <option value="newest">Newest</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="rating">Top Rated</option>
+                  <option value="featured">{t('products:sorting.sortBy')}: {t('products:sorting.featured')}</option>
+                  <option value="newest">{t('products:sorting.newest')}</option>
+                  <option value="price-low">{t('products:sorting.priceLowToHigh')}</option>
+                  <option value="price-high">{t('products:sorting.priceHighToLow')}</option>
+                  <option value="rating">{t('products:sorting.topRated')}</option>
                 </select>
               </div>
             </div>
@@ -204,8 +209,8 @@ const Shop = () => {
             ) : products.length === 0 ? (
               <div className="text-center py-16 bg-gradient-to-br from-surface-light to-white rounded-2xl border-2 border-dashed border-border">
                 <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-2xl font-bold mb-3">No products found</h3>
-                <p className="text-text-body mb-6">Try adjusting your filters or search query.</p>
+                <h3 className="text-2xl font-bold mb-3">{t('products:noProductsFound')}</h3>
+                <p className="text-text-body mb-6">{t('products:tryAdjustingFilters')}</p>
                 <button
                   onClick={() => {
                     setSelectedCategoryId(null);
@@ -214,7 +219,7 @@ const Shop = () => {
                   }}
                   className="bg-primary text-primary-foreground px-8 py-3 rounded-xl text-sm font-bold hover:scale-105 transition-all shadow-lg"
                 >
-                  Clear All Filters
+                  {t('products:clearAllFilters')}
                 </button>
               </div>
             ) : (

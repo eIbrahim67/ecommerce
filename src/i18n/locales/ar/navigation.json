@@ -1,0 +1,46 @@
+{
+  "header": {
+    "home": "الرئيسية",
+    "shop": "المتجر",
+    "about": "من نحن",
+    "contact": "اتصل بنا",
+    "cart": "السلة",
+    "wishlist": "المفضلة",
+    "account": "الحساب",
+    "supportCenter": "مركز الدعم 24/7"
+  },
+  "footer": {
+    "quickLinks": "روابط سريعة",
+    "customerService": "خدمة العملاء",
+    "followUs": "تابعنا",
+    "copyright": "© 2024 التجارة الإلكترونية. جميع الحقوق محفوظة.",
+    "tagline": "شريكك الموثوق للبقالة الطازجة والعضوية التي يتم توصيلها مباشرة إلى باب منزلك.",
+    "company": "الشركة",
+    "account": "الحساب",
+    "corporate": "الشركات",
+    "popular": "الشائع",
+    "hours": "مفتوح 24 ساعة، جميع الأيام",
+    "links": {
+      "aboutUs": "من نحن",
+      "deliveryInfo": "معلومات التوصيل",
+      "privacyPolicy": "سياسة الخصوصية",
+      "termsConditions": "الشروط والأحكام",
+      "contactUs": "اتصل بنا",
+      "signIn": "تسجيل الدخول",
+      "viewCart": "عرض السلة",
+      "myWishlist": "قائمة المفضلة",
+      "trackOrder": "تتبع طلبي",
+      "helpTicket": "تذكرة المساعدة",
+      "becomeVendor": "كن بائعاً",
+      "affiliateProgram": "برنامج الشراكة",
+      "farmBusiness": "أعمال المزرعة",
+      "farmCareers": "وظائف المزرعة",
+      "ourSuppliers": "موردونا",
+      "milk": "الحليب والحليب بالنكهات",
+      "butter": "الزبدة والسمن",
+      "eggs": "بدائل البيض",
+      "marmalades": "المربى",
+      "sourCream": "القشدة الحامضة والصلصات"
+    }
+  }
+}

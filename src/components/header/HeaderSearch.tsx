@@ -2,6 +2,7 @@ import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, unwrapResponse } from "@/lib/api";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface CategoryOption {
     id: number;
@@ -13,6 +14,7 @@ const HeaderSearch = () => {
     const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
     const [categories, setCategories] = useState<CategoryOption[]>([]);
     const navigate = useNavigate();
+    const { t } = useLanguage();
 
     useEffect(() => {
         api.get("/categories").then(res => {
@@ -38,23 +40,24 @@ const HeaderSearch = () => {
             <select
                 value={selectedCategoryId}
                 onChange={(e) => setSelectedCategoryId(e.target.value)}
-                className="px-5 py-3.5 bg-transparent text-sm font-semibold text-heading border-r-2 border-border/50 outline-none hover:text-primary cursor-pointer transition-colors"
+                className="px-5 py-3.5 bg-transparent text-sm font-semibold text-heading border-r-2 rtl:border-r-0 rtl:border-l-2 border-border/50 outline-none hover:text-primary cursor-pointer transition-colors"
                 aria-label="Select Category"
             >
-                <option value="">All Categories</option>
+                <option value="">{t('products:allCategories', 'All Categories')}</option>
                 {categories.map((cat) => (
                     <option key={cat.id} value={String(cat.id)}>{cat.name}</option>
                 ))}
             </select>
             <div className="flex-1 flex items-center px-4">
-                <Search className="w-5 h-5 text-text-body/50 mr-3" />
+                <Search className="w-5 h-5 text-text-body/50 mr-3 rtl:mr-0 rtl:ml-3" />
                 <input
                     type="text"
-                    placeholder="Search for products..."
+                    placeholder={t('common:buttons.search') + '...'}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="flex-1 py-3.5 outline-none text-sm bg-transparent placeholder:text-text-body/60 font-medium"
                     aria-label="Search items"
+                    dir="auto"
                 />
             </div>
             <button
@@ -62,7 +65,7 @@ const HeaderSearch = () => {
                 className="px-8 py-3.5 bg-primary text-primary-foreground hover:bg-primary/90 transition-all focus:outline-none flex items-center justify-center font-bold text-sm hover:scale-105 active:scale-95"
                 aria-label="Search"
             >
-                Search
+                {t('common:buttons.search')}
             </button>
         </form>
     );

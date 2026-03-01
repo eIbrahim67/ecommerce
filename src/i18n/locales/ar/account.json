@@ -1,0 +1,43 @@
+{
+  "pageTitle": "حسابي",
+  "tabs": {
+    "profile": "الملف الشخصي",
+    "orders": "الطلبات",
+    "settings": "الإعدادات"
+  },
+  "adminDashboard": "لوحة تحكم المسؤول",
+  "logout": "تسجيل الخروج",
+  "welcome": {
+    "hello": "مرحباً",
+    "description": "من لوحة تحكم حسابك يمكنك عرض طلباتك الأخيرة وإدارة إعداداتك.",
+    "viewAllOrders": "عرض جميع الطلبات"
+  },
+  "profile": {
+    "title": "معلومات الملف الشخصي",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "role": "الدور",
+    "openAdminDashboard": "فتح لوحة تحكم المسؤول"
+  },
+  "orders": {
+    "title": "طلباتي",
+    "orderNumber": "طلب #",
+    "date": "التاريخ",
+    "total": "الإجمالي",
+    "status": "الحالة",
+    "noOrders": "لا توجد طلبات بعد.",
+    "startShopping": "ابدأ التسوق"
+  },
+  "settings": {
+    "title": "إعدادات الحساب",
+    "changePasswordDescription": "هل تريد تغيير كلمة المرور؟ استخدم خاصية نسيت كلمة المرور.",
+    "changePassword": "تغيير كلمة المرور"
+  },
+  "orderStatus": {
+    "pending": "قيد الانتظار",
+    "processing": "قيد المعالجة",
+    "shipped": "تم الشحن",
+    "delivered": "تم التوصيل",
+    "cancelled": "ملغي"
+  }
+}

@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import NewsletterBanner from "@/components/NewsletterBanner";
-import ProductCard, { ProductSummaryDto } from "@/components/ProductCard";
+import ProductCard from "@/components/ProductCard";
 import { Star, ShoppingCart, Heart, Shuffle, Minus, Plus } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -11,39 +11,15 @@ import { useWishlist } from "@/contexts/WishlistContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { api, unwrapResponse } from "@/lib/api";
 import { toast } from "sonner";
+import { ProductSummaryDto, ProductDetailDto, CategoryDto } from "@/types/api";
+import { getLocalizedText, getLocalizedBadge } from "@/utils/localization";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ProductVariantDto {
   id: number;
   variantName: string;
   priceAdjustment: number;
   stockQuantity: number;
-}
-
-interface ProductDto {
-  id: number;
-  name: string;
-  brand: string;
-  vendor: string;
-  type: string;
-  categoryId: number;
-  compareAtPrice: number | null;
-  basePrice: number;
-  discountPercent: number | null;
-  averageRating: number;
-  reviewCount: number;
-  imageUrls: string[];
-  badge: "hot" | "new" | "sale" | "discount" | null;
-  description: string;
-  sku: string;
-  tags: string[];
-  variants: ProductVariantDto[];
-}
-
-interface CategoryDto {
-  id: number;
-  name: string;
-  icon: string | null;
-  count: number;
 }
 
 interface ReviewDto {
@@ -56,8 +32,9 @@ interface ReviewDto {
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const { currentLanguage } = useLanguage();
 
-  const [product, setProduct] = useState<ProductDto | null>(null);
+  const [product, setProduct] = useState<ProductDetailDto | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<ProductSummaryDto[]>([]);
   const [categories, setCategories] = useState<CategoryDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -238,11 +215,17 @@ const ProductDetail = () => {
     ? product.compareAtPrice + (selectedVariant.priceAdjustment || 0)
     : (product.compareAtPrice || product.basePrice);
 
+  // Get localized content
+  const displayName = getLocalizedText(product.name, product.nameAr, currentLanguage);
+  const displayDescription = getLocalizedText(product.description || '', product.descriptionAr, currentLanguage);
+  const displayBrand = getLocalizedText(product.brand, product.brandAr, currentLanguage);
+  const displayBadge = getLocalizedBadge(product.badge, product.badgeAr, currentLanguage);
+
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title={`${product.name} | NestMart`}
-        description={product.description || `Buy ${product.name} from NestMart.`}
+        title={`${displayName} | NestMart`}
+        description={displayDescription || `Buy ${displayName} from NestMart.`}
         type="product"
       />
       <Header />
@@ -255,7 +238,7 @@ const ProductDetail = () => {
               {/* Image Gallery */}
               <div className="md:w-1/2">
                 <div className="bg-surface-light rounded-xl overflow-hidden aspect-square flex items-center justify-center border border-border mb-3">
-                  <img src={mainImage} alt={product.name} className="w-full h-full object-cover" />
+                  <img src={mainImage} alt={displayName} className="w-full h-full object-cover" />
                 </div>
                 {product.imageUrls && product.imageUrls.length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-2">
@@ -265,7 +248,7 @@ const ProductDetail = () => {
                         onClick={() => setMainImage(url)}
                         className={`w-20 h-20 rounded-lg overflow-hidden border-2 shrink-0 cursor-pointer transition-colors ${mainImage === url ? "border-primary" : "border-border hover:border-primary"}`}
                       >
-                        <img src={url} alt={`${product.name} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                        <img src={url} alt={`${displayName} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
                       </div>
                     ))}
                   </div>
@@ -275,11 +258,12 @@ const ProductDetail = () => {
               {/* Details */}
               <div className="md:w-1/2">
                 <div className="flex gap-2 mb-3">
-                  {product.badge === "sale" && <span className="badge-sale inline-block">Sale</span>}
-                  {product.badge === "hot" && <span className="badge-sale bg-red-500 text-white inline-block">Hot</span>}
-                  {product.badge === "new" && <span className="badge-discount bg-brand-green text-primary-foreground">New</span>}
+                  {displayBadge && product.badge === "sale" && <span className="badge-sale inline-block">{displayBadge}</span>}
+                  {displayBadge && product.badge === "hot" && <span className="badge-sale bg-red-500 text-white inline-block">{displayBadge}</span>}
+                  {displayBadge && product.badge === "new" && <span className="badge-discount bg-brand-green text-primary-foreground">{displayBadge}</span>}
+                  {displayBadge && product.badge === "discount" && <span className="badge-discount">{displayBadge}</span>}
                 </div>
-                <h1 className="text-2xl font-bold mb-2" style={{ fontFamily: "'Quicksand', sans-serif" }}>{product.name}</h1>
+                <h1 className="text-2xl font-bold mb-2" style={{ fontFamily: "'Quicksand', sans-serif" }}>{displayName}</h1>
                 <div className="flex items-center gap-2 mb-3">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
@@ -306,7 +290,7 @@ const ProductDetail = () => {
                 </div>
 
                 <p className="text-text-body text-sm leading-relaxed mb-4">
-                  {product.description || "No description provided."}
+                  {displayDescription || "No description provided."}
                 </p>
 
                 {/* Variants */}
@@ -386,7 +370,7 @@ const ProductDetail = () => {
                 </div>
 
                 <div className="text-sm text-text-body space-y-1.5 pt-4 border-t border-border">
-                  <p>Brand: <span className="font-semibold">{product.brand}</span></p>
+                  <p>Brand: <span className="font-semibold">{displayBrand}</span></p>
                   <p>Type: <span className="text-text-body">{product.type || "N/A"}</span></p>
                   <p>Category: <Link to={`/shop?categoryId=${product.categoryId}`} className="text-primary hover:underline">Category #{product.categoryId}</Link></p>
                   <p>SKU: <span>{product.sku || "N/A"}</span></p>
@@ -423,7 +407,7 @@ const ProductDetail = () => {
             <div className="prose prose-sm text-text-body max-w-none mb-12">
               {activeTab === "description" && (
                 <div>
-                  <p>{product.description || "No description provided."}</p>
+                  <p>{displayDescription || "No description provided."}</p>
                 </div>
               )}
               {activeTab === "vendor" && (

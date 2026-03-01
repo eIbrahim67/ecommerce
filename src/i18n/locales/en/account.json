@@ -1,0 +1,43 @@
+{
+  "pageTitle": "My Account",
+  "tabs": {
+    "profile": "Profile",
+    "orders": "Orders",
+    "settings": "Settings"
+  },
+  "adminDashboard": "Admin Dashboard",
+  "logout": "Logout",
+  "welcome": {
+    "hello": "Hello",
+    "description": "From your account dashboard you can view your recent orders and manage your settings.",
+    "viewAllOrders": "View All Orders"
+  },
+  "profile": {
+    "title": "Profile Information",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "openAdminDashboard": "Open Admin Dashboard"
+  },
+  "orders": {
+    "title": "My Orders",
+    "orderNumber": "Order #",
+    "date": "Date",
+    "total": "Total",
+    "status": "Status",
+    "noOrders": "No orders yet.",
+    "startShopping": "Start shopping"
+  },
+  "settings": {
+    "title": "Account Settings",
+    "changePasswordDescription": "Want to change your password? Use the forgot password flow.",
+    "changePassword": "Change Password"
+  },
+  "orderStatus": {
+    "pending": "Pending",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  }
+}

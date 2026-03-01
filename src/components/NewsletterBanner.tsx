@@ -3,10 +3,12 @@ import newsletterBg from "@/assets/newsletter-bg.jpg";
 import { useState } from "react";
 import { api, unwrapResponse } from "@/lib/api";
 import { toast } from "sonner";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const NewsletterBanner = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,11 +18,11 @@ const NewsletterBanner = () => {
       setIsSubmitting(true);
       const res = await api.post("/newsletter/subscribe", { email });
       unwrapResponse(res.data);
-      toast.success("Successfully subscribed to the newsletter!");
+      toast.success(t('home:newsletter.successMessage'));
       setEmail("");
     } catch (error: any) {
       console.error("Newsletter subscription error:", error);
-      toast.error(error.message || "Failed to subscribe. Please try again.");
+      toast.error(error.message || t('home:newsletter.errorMessage'));
     } finally {
       setTimeout(() => setIsSubmitting(false), 500);
     }
@@ -35,18 +37,18 @@ const NewsletterBanner = () => {
       <div className="container mx-auto flex items-center relative z-10">
         <div className="py-14 px-10 flex-1 max-w-2xl">
           <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-white text-xs font-semibold mb-4">
-            📧 Newsletter
+            📧 {t('home:newsletter.badge')}
           </div>
           <h2 className="text-3xl lg:text-5xl font-bold mb-4 text-white leading-tight" style={{ fontFamily: "'Quicksand', sans-serif" }}>
-            Stay home & get your daily needs from our shop
+            {t('home:newsletter.title')}
           </h2>
-          <p className="text-white/90 mb-8 text-lg">Start Your Daily Shopping with <span className="text-yellow-300 font-bold">Nest Mart</span></p>
+          <p className="text-white/90 mb-8 text-lg">{t('home:newsletter.subtitle')} <span className="text-yellow-300 font-bold">Nest Mart</span></p>
           <form onSubmit={handleSubmit} className="flex gap-3 flex-wrap">
             <div className="flex items-center bg-white rounded-xl px-5 py-4 flex-1 max-w-md border-2 border-white/30 shadow-xl">
               <Mail className="w-5 h-5 text-primary mr-3 shrink-0" />
               <input
                 type="email"
-                placeholder="Enter your email address"
+                placeholder={t('home:newsletter.placeholder')}
                 required
                 className="outline-none text-sm flex-1 bg-transparent min-w-0 text-heading placeholder:text-text-body"
                 value={email}
@@ -61,10 +63,10 @@ const NewsletterBanner = () => {
               {isSubmitting ? (
                 <span className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-                  Subscribing...
+                  {t('home:newsletter.subscribing')}
                 </span>
               ) : (
-                "Subscribe Now"
+                t('home:newsletter.subscribe')
               )}
             </button>
           </form>

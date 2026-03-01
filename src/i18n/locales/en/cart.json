@@ -1,0 +1,26 @@
+{
+  "title": "Shopping Cart",
+  "emptyTitle": "Your cart is empty",
+  "emptyMessage": "Looks like you haven't added any items to the cart yet.",
+  "startShopping": "Start Shopping",
+  "itemsCount": "{{count}} items in your cart",
+  "itemsCount_one": "{{count}} item in your cart",
+  "labels": {
+    "product": "Product",
+    "unitPrice": "Unit Price",
+    "quantity": "Quantity",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "remove": "Remove",
+    "variant": "Variant"
+  },
+  "summary": {
+    "title": "Order Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "total": "Total",
+    "proceedToCheckout": "Proceed to Checkout",
+    "continueShopping": "Continue Shopping"
+  }
+}

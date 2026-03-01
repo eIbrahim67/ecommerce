@@ -5,6 +5,7 @@ import { api, unwrapResponse } from "@/lib/api";
 import { User, Package, Settings, LogOut, ShieldAlert } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type Tab = "profile" | "orders" | "settings";
 
@@ -17,6 +18,7 @@ const statusColors: Record<string, string> = {
 };
 
 const Account = () => {
+    const { t } = useTranslation('account');
     const { user, isAdmin, logout } = useAuth();
     const [activeTab, setActiveTab] = useState<Tab>("profile");
     const [orders, setOrders] = useState<any[]>([]);
@@ -35,16 +37,16 @@ const Account = () => {
     if (!user) return null;
 
     const tabs: { key: Tab; label: string; icon: React.ElementType }[] = [
-        { key: "profile", label: "Profile", icon: User },
-        { key: "orders", label: "Orders", icon: Package },
-        { key: "settings", label: "Settings", icon: Settings },
+        { key: "profile", label: t('tabs.profile'), icon: User },
+        { key: "orders", label: t('tabs.orders'), icon: Package },
+        { key: "settings", label: t('tabs.settings'), icon: Settings },
     ];
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
             <Header />
             <main className="flex-1 container mx-auto py-12 px-4">
-                <h1 className="text-3xl font-bold font-heading mb-8">My Account</h1>
+                <h1 className="text-3xl font-bold font-heading mb-8">{t('pageTitle')}</h1>
 
                 <div className="flex flex-col md:flex-row gap-8">
                     {/* Sidebar */}
@@ -61,12 +63,12 @@ const Account = () => {
                             ))}
                             {isAdmin && (
                                 <Link to="/admin" className="flex items-center gap-3 w-full text-left px-4 py-3 text-purple-700 hover:bg-purple-50 rounded-lg transition-colors font-medium">
-                                    <ShieldAlert className="w-5 h-5" /> Admin Dashboard
+                                    <ShieldAlert className="w-5 h-5" /> {t('adminDashboard')}
                                 </Link>
                             )}
                             <div className="my-2 border-t border-border" />
                             <button onClick={logout} className="flex items-center gap-3 w-full text-left px-4 py-3 text-red-500 hover:bg-red-50 rounded-lg transition-colors font-medium">
-                                <LogOut className="w-5 h-5" /> Logout
+                                <LogOut className="w-5 h-5" /> {t('logout')}
                             </button>
                         </div>
                     </aside>
@@ -76,14 +78,14 @@ const Account = () => {
                         {/* Welcome Banner */}
                         <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-8 border-2 border-primary/20 flex items-center justify-between shadow-lg">
                             <div>
-                                <h2 className="text-2xl font-bold font-heading mb-2">Hello, {user.name}!</h2>
-                                <p className="text-text-body mb-4">From your account dashboard you can view your recent orders and manage your settings.</p>
+                                <h2 className="text-2xl font-bold font-heading mb-2">{t('welcome.hello')}, {user.name}!</h2>
+                                <p className="text-text-body mb-4">{t('welcome.description')}</p>
                                 <Link 
                                     to="/orders" 
                                     className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-bold hover:scale-105 transition-all shadow-md"
                                 >
                                     <Package className="w-5 h-5" />
-                                    View All Orders
+                                    {t('welcome.viewAllOrders')}
                                 </Link>
                             </div>
                             <div className="w-16 h-16 bg-primary text-primary-foreground text-2xl font-bold rounded-2xl flex items-center justify-center shrink-0 uppercase shadow-lg">
@@ -94,12 +96,12 @@ const Account = () => {
                         {/* Profile Tab */}
                         {activeTab === "profile" && (
                             <div className="bg-card border border-border rounded-xl p-6">
-                                <h3 className="font-bold border-b border-border pb-3 mb-4">Profile Information</h3>
+                                <h3 className="font-bold border-b border-border pb-3 mb-4">{t('profile.title')}</h3>
                                 <div className="space-y-3 text-sm">
-                                    <p><span className="text-text-body">Name:</span> <span className="font-medium text-heading float-right">{user.name}</span></p>
-                                    <p><span className="text-text-body">Email:</span> <span className="font-medium text-heading float-right">{user.email}</span></p>
+                                    <p><span className="text-text-body">{t('profile.name')}:</span> <span className="font-medium text-heading float-right">{user.name}</span></p>
+                                    <p><span className="text-text-body">{t('profile.email')}:</span> <span className="font-medium text-heading float-right">{user.email}</span></p>
                                     <p>
-                                        <span className="text-text-body">Role:</span>
+                                        <span className="text-text-body">{t('profile.role')}:</span>
                                         <span className={`float-right px-2 py-0.5 rounded-full text-xs font-bold uppercase ${isAdmin ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}`}>
                                             {user.role}
                                         </span>
@@ -108,7 +110,7 @@ const Account = () => {
                                 {isAdmin && (
                                     <div className="mt-6 pt-4 border-t border-border">
                                         <Link to="/admin" className="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition">
-                                            <ShieldAlert className="w-4 h-4" /> Open Admin Dashboard
+                                            <ShieldAlert className="w-4 h-4" /> {t('profile.openAdminDashboard')}
                                         </Link>
                                     </div>
                                 )}
@@ -119,7 +121,7 @@ const Account = () => {
                         {activeTab === "orders" && (
                             <div className="bg-card border border-border rounded-xl overflow-hidden">
                                 <div className="p-5 border-b border-border">
-                                    <h3 className="font-bold">My Orders</h3>
+                                    <h3 className="font-bold">{t('orders.title')}</h3>
                                 </div>
                                 {ordersLoading ? (
                                     <div className="flex items-center justify-center p-8">
@@ -128,18 +130,18 @@ const Account = () => {
                                 ) : orders.length === 0 ? (
                                     <div className="text-center py-10 text-text-body">
                                         <Package className="w-10 h-10 mx-auto mb-3 text-border" />
-                                        <p className="text-sm">No orders yet.</p>
-                                        <Link to="/shop" className="text-primary hover:underline font-medium text-sm mt-2 inline-block">Start shopping</Link>
+                                        <p className="text-sm">{t('orders.noOrders')}</p>
+                                        <Link to="/shop" className="text-primary hover:underline font-medium text-sm mt-2 inline-block">{t('orders.startShopping')}</Link>
                                     </div>
                                 ) : (
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-sm">
                                             <thead>
                                                 <tr className="bg-surface-light text-left">
-                                                    <th className="px-5 py-3 text-text-body font-medium">Order #</th>
-                                                    <th className="px-5 py-3 text-text-body font-medium">Date</th>
-                                                    <th className="px-5 py-3 text-text-body font-medium">Total</th>
-                                                    <th className="px-5 py-3 text-text-body font-medium">Status</th>
+                                                    <th className="px-5 py-3 text-text-body font-medium">{t('orders.orderNumber')}</th>
+                                                    <th className="px-5 py-3 text-text-body font-medium">{t('orders.date')}</th>
+                                                    <th className="px-5 py-3 text-text-body font-medium">{t('orders.total')}</th>
+                                                    <th className="px-5 py-3 text-text-body font-medium">{t('orders.status')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-border">
@@ -150,7 +152,7 @@ const Account = () => {
                                                         <td className="px-5 py-3 font-semibold">${(order.totalAmount || 0).toFixed(2)}</td>
                                                         <td className="px-5 py-3">
                                                             <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${statusColors[order.status] || "bg-slate-100 text-slate-700"}`}>
-                                                                {order.status}
+                                                                {t(`orderStatus.${order.status.toLowerCase()}`)}
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -165,10 +167,10 @@ const Account = () => {
                         {/* Settings Tab */}
                         {activeTab === "settings" && (
                             <div className="bg-card border border-border rounded-xl p-6">
-                                <h3 className="font-bold border-b border-border pb-3 mb-4">Account Settings</h3>
-                                <p className="text-text-body text-sm mb-4">Want to change your password? Use the forgot password flow.</p>
+                                <h3 className="font-bold border-b border-border pb-3 mb-4">{t('settings.title')}</h3>
+                                <p className="text-text-body text-sm mb-4">{t('settings.changePasswordDescription')}</p>
                                 <Link to="/forgot-password" className="inline-flex items-center gap-2 border border-border px-4 py-2 rounded-lg text-sm font-semibold hover:border-primary hover:text-primary transition-colors">
-                                    Change Password
+                                    {t('settings.changePassword')}
                                 </Link>
                             </div>
                         )}
