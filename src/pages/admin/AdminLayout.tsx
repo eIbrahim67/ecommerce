@@ -14,20 +14,26 @@ import {
     ShieldCheck,
     Home,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const navItems = [
-    { path: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-    { path: "/admin/products", label: "Products", icon: Package },
-    { path: "/admin/categories", label: "Categories", icon: Tag },
-    { path: "/admin/orders", label: "Orders", icon: ShoppingBag },
-    { path: "/admin/users", label: "Users", icon: Users },
-];
+const useNavItems = () => {
+    const { t } = useTranslation('admin');
+    return [
+        { path: "/admin", label: t('dashboard.title'), icon: LayoutDashboard, exact: true },
+        { path: "/admin/products", label: t('products.title'), icon: Package },
+        { path: "/admin/categories", label: t('categories.title'), icon: Tag },
+        { path: "/admin/orders", label: t('orders.title'), icon: ShoppingBag },
+        { path: "/admin/users", label: t('users.title'), icon: Users },
+    ];
+};
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+    const { t } = useTranslation('admin');
     const { user, logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const navItems = useNavItems();
 
     const handleLogout = () => {
         logout();
@@ -49,7 +55,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                     </div>
                     <div>
                         <p className="font-bold text-white text-sm">NestMart</p>
-                        <p className="text-white/60 text-xs">Admin Panel</p>
+                        <p className="text-white/60 text-xs">{t('menu.adminPanel')}</p>
                     </div>
                 </div>
             </div>
@@ -84,7 +90,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                     className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/10 transition-all"
                 >
                     <Home className="w-4 h-4" />
-                    Back to Store
+                    {t('menu.backToStore')}
                 </Link>
                 <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/10">
                     <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0 uppercase">
@@ -100,7 +106,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                     className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm text-red-300 hover:text-white hover:bg-red-500/20 transition-all"
                 >
                     <LogOut className="w-4 h-4" />
-                    Logout
+                    {t('menu.logout')}
                 </button>
             </div>
         </div>
@@ -147,7 +153,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                     </button>
                     <div className="flex-1">
                         <h1 className="text-slate-800 font-semibold text-lg capitalize">
-                            {navItems.find((n) => isActive(n))?.label ?? "Admin"}
+                            {navItems.find((n) => isActive(n))?.label ?? t('menu.admin')}
                         </h1>
                     </div>
                 </header>

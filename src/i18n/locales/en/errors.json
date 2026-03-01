@@ -1,0 +1,10 @@
+{
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address"
+  },
+  "api": {
+    "networkError": "Network error occurred",
+    "serverError": "Server error occurred"
+  }
+}

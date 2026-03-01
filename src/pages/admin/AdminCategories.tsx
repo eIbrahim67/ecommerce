@@ -3,6 +3,7 @@ import AdminLayout from "./AdminLayout";
 import { api, unwrapResponse } from "@/lib/api";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface Category {
     id: number;
@@ -16,6 +17,7 @@ interface Category {
 const EMPTY = { name: "", description: "", imageUrl: "", parentCategoryId: null };
 
 const AdminCategories = () => {
+    const { t } = useTranslation('admin');
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -30,7 +32,7 @@ const AdminCategories = () => {
             const env = unwrapResponse(res.data);
             setCategories(env.data || []);
         } catch {
-            toast.error("Failed to load categories");
+            toast.error(t('categories.loadFailed'));
         } finally {
             setIsLoading(false);
         }
@@ -42,33 +44,33 @@ const AdminCategories = () => {
     const openEdit = (c: Category) => { setEditingId(c.id); setFormData({ name: c.name, description: c.description, imageUrl: c.imageUrl, parentCategoryId: c.parentCategoryId }); setShowModal(true); };
 
     const handleSave = async () => {
-        if (!formData.name) return toast.error("Name is required");
+        if (!formData.name) return toast.error(t('categories.nameRequired'));
         setIsSaving(true);
         try {
             if (editingId) {
                 await api.put(`/admin/categories/${editingId}`, formData);
-                toast.success("Category updated!");
+                toast.success(t('categories.categoryUpdated'));
             } else {
                 await api.post("/admin/categories", formData);
-                toast.success("Category created!");
+                toast.success(t('categories.categoryCreated'));
             }
             setShowModal(false);
             fetchCategories();
         } catch (e: any) {
-            toast.error(e.message || "Save failed");
+            toast.error(e.message || t('categories.saveFailed'));
         } finally {
             setIsSaving(false);
         }
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Delete this category?")) return;
+        if (!confirm(t('categories.deleteConfirm'))) return;
         try {
             await api.delete(`/admin/categories/${id}`);
-            toast.success("Category deleted");
+            toast.success(t('categories.categoryDeleted'));
             fetchCategories();
         } catch {
-            toast.error("Delete failed");
+            toast.error(t('categories.deleteFailed'));
         }
     };
 
@@ -77,11 +79,11 @@ const AdminCategories = () => {
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-800">Categories</h2>
-                        <p className="text-slate-500 text-sm">Manage product categories</p>
+                        <h2 className="text-2xl font-bold text-slate-800">{t('categories.title')}</h2>
+                        <p className="text-slate-500 text-sm">{t('categories.subtitle')}</p>
                     </div>
                     <button onClick={openCreate} className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity">
-                        <Plus className="w-4 h-4" /> Add Category
+                        <Plus className="w-4 h-4" /> {t('categories.addCategory')}
                     </button>
                 </div>
 
@@ -95,10 +97,10 @@ const AdminCategories = () => {
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="bg-slate-50 text-left">
-                                        <th className="px-6 py-3 text-slate-500 font-medium">Category</th>
-                                        <th className="px-6 py-3 text-slate-500 font-medium">Description</th>
-                                        <th className="px-6 py-3 text-slate-500 font-medium">Products</th>
-                                        <th className="px-6 py-3 text-slate-500 font-medium">Actions</th>
+                                        <th className="px-6 py-3 text-slate-500 font-medium">{t('categories.category')}</th>
+                                        <th className="px-6 py-3 text-slate-500 font-medium">{t('categories.description')}</th>
+                                        <th className="px-6 py-3 text-slate-500 font-medium">{t('categories.products')}</th>
+                                        <th className="px-6 py-3 text-slate-500 font-medium">{t('categories.actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
@@ -134,27 +136,27 @@ const AdminCategories = () => {
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
                         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                            <h3 className="font-bold text-slate-800">{editingId ? "Edit Category" : "Create Category"}</h3>
+                            <h3 className="font-bold text-slate-800">{editingId ? t('categories.editCategory') : t('categories.createCategory')}</h3>
                             <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-slate-100"><X className="w-5 h-5 text-slate-500" /></button>
                         </div>
                         <div className="p-6 space-y-4">
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Name *</label>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">{t('categories.name')} *</label>
                                 <input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Description</label>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">{t('categories.description')}</label>
                                 <input value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Image / Icon (emoji or URL)</label>
-                                <input value={formData.imageUrl} onChange={e => setFormData({ ...formData, imageUrl: e.target.value })} placeholder="e.g. 🥛 or /images/category.jpg" className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" />
+                                <label className="block text-xs font-medium text-slate-500 mb-1">{t('categories.imageIcon')}</label>
+                                <input value={formData.imageUrl} onChange={e => setFormData({ ...formData, imageUrl: e.target.value })} placeholder={t('categories.placeholder')} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" />
                             </div>
                         </div>
                         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100">
-                            <button onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">Cancel</button>
+                            <button onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700">{t('categories.cancel')}</button>
                             <button onClick={handleSave} disabled={isSaving} className="px-6 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:opacity-90 disabled:opacity-50">
-                                {isSaving ? "Saving..." : editingId ? "Update" : "Create"}
+                                {isSaving ? t('categories.saving') : editingId ? t('categories.update') : t('categories.create')}
                             </button>
                         </div>
                     </div>

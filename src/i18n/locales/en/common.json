@@ -1,0 +1,29 @@
+{
+  "buttons": {
+    "addToCart": "Add to Cart",
+    "checkout": "Checkout",
+    "login": "Login",
+    "register": "Register",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search"
+  },
+  "labels": {
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "phone": "Phone",
+    "address": "Address"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "success": "Success!",
+    "error": "An error occurred",
+    "noResults": "No results found",
+    "free": "Free"
+  },
+  "language": "Language"
+}

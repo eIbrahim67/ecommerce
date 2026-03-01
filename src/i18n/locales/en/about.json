@@ -1,0 +1,46 @@
+{
+  "pageTitle": "About Us",
+  "pageDescription": "Learn more about NestMart and our mission",
+  "welcome": {
+    "title": "Welcome to Nest",
+    "paragraph1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "paragraph2": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident."
+  },
+  "whatWeProvide": {
+    "title": "What We Provide?",
+    "features": {
+      "bestPrices": "Best Prices & Offers",
+      "wideAssortment": "Wide Assortment",
+      "freeDelivery": "Free Delivery",
+      "easyReturns": "Easy Returns",
+      "satisfaction": "100% Satisfaction",
+      "dailyDeal": "Great Daily Deal"
+    },
+    "featureDescription": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration.",
+    "readMore": "Read more"
+  },
+  "performance": {
+    "subtitle": "Our performance",
+    "title": "Your Partner for e-commerce grocery solution",
+    "description": "Ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.",
+    "whoWeAre": {
+      "title": "Who we are",
+      "description": "With big discounts of segments of Lorem ipsum available with many variations."
+    },
+    "ourHistory": {
+      "title": "Our history",
+      "description": "With big discounts of segments of Lorem ipsum available with many variations."
+    },
+    "ourMission": {
+      "title": "Our mission",
+      "description": "With big discounts of segments of Lorem ipsum available with many variations."
+    }
+  },
+  "stats": {
+    "gloriousYears": "Glorious years",
+    "happyClients": "Happy clients",
+    "projectsComplete": "Projects complete",
+    "teamAdvisor": "Team advisor",
+    "productsSale": "Products Sale"
+  }
+}

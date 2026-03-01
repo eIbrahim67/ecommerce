@@ -3,21 +3,26 @@ import { Heart, ShoppingCart, User, LogIn, UserPlus } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { LanguageSwitcher } from "../LanguageSwitcher";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const HeaderActions = () => {
     const { cartCount } = useCart();
     const { items: wishlistItems } = useWishlist();
     const { user, isAuthenticated } = useAuth();
+    const { t } = useLanguage();
 
     return (
         <div className="flex items-center gap-2 lg:gap-4">
+            <LanguageSwitcher />
+            
             <Link
                 to="/wishlist"
                 className="hidden md:flex items-center gap-1.5 text-sm font-medium text-text-body hover:text-primary transition-all duration-300 relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full px-3 py-2 hover:bg-surface-light border border-transparent hover:border-border/50"
                 aria-label="Go to Wishlist"
             >
                 <Heart className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                <span>Wishlist</span>
+                <span>{t('navigation:header.wishlist')}</span>
                 {wishlistItems.length > 0 && (
                     <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] min-w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold border-2 border-background shadow-sm">
                         {wishlistItems.length}
@@ -31,7 +36,7 @@ const HeaderActions = () => {
                 aria-label="Go to Cart"
             >
                 <ShoppingCart className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                <span className="hidden md:inline">Cart</span>
+                <span className="hidden md:inline">{t('navigation:header.cart')}</span>
                 <span className="absolute -top-1 -right-0 md:-right-1 bg-primary text-primary-foreground text-[10px] min-w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold border-2 border-background shadow-sm">
                     {cartCount}
                 </span>
@@ -54,13 +59,13 @@ const HeaderActions = () => {
                         to="/login"
                         className="text-sm font-semibold flex items-center gap-1 text-text-body hover:text-primary transition-colors px-2 py-2"
                     >
-                        <LogIn className="w-4 h-4" /> Sign In
+                        <LogIn className="w-4 h-4" /> {t('common:buttons.login')}
                     </Link>
                     <Link
                         to="/register"
                         className="text-sm font-semibold flex items-center gap-1.5 bg-primary/10 text-primary px-4 py-2 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors hover:shadow-md hover:-translate-y-0.5 duration-300"
                     >
-                        <UserPlus className="w-4 h-4" /> Sign Up
+                        <UserPlus className="w-4 h-4" /> {t('common:buttons.register')}
                     </Link>
                 </div>
             )}

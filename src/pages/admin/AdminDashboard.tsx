@@ -3,6 +3,7 @@ import AdminLayout from "./AdminLayout";
 import { api, unwrapResponse } from "@/lib/api";
 import { Package, ShoppingBag, Users, Tag, TrendingUp, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface StatCardProps {
     label: string;
@@ -37,6 +38,7 @@ const statusColors: Record<string, string> = {
 };
 
 const AdminDashboard = () => {
+    const { t } = useTranslation('admin');
     const [stats, setStats] = useState({ products: 0, categories: 0, orders: 0, users: 0 });
     const [recentOrders, setRecentOrders] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -87,16 +89,16 @@ const AdminDashboard = () => {
         <AdminLayout>
             <div className="space-y-6">
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-800 mb-1">Overview</h2>
-                    <p className="text-slate-500 text-sm">Welcome back! Here's what's happening.</p>
+                    <h2 className="text-2xl font-bold text-slate-800 mb-1">{t('dashboard.title')}</h2>
+                    <p className="text-slate-500 text-sm">{t('dashboard.subtitle')}</p>
                 </div>
 
                 {/* Stat Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-                    <StatCard label="Total Products" value={stats.products} icon={Package} color="bg-primary" link="/admin/products" />
-                    <StatCard label="Categories" value={stats.categories} icon={Tag} color="bg-indigo-500" link="/admin/categories" />
-                    <StatCard label="Orders" value={stats.orders} icon={ShoppingBag} color="bg-orange-500" link="/admin/orders" />
-                    <StatCard label="Users" value={stats.users} icon={Users} color="bg-emerald-500" link="/admin/users" />
+                    <StatCard label={t('dashboard.totalProducts')} value={stats.products} icon={Package} color="bg-primary" link="/admin/products" />
+                    <StatCard label={t('dashboard.categories')} value={stats.categories} icon={Tag} color="bg-indigo-500" link="/admin/categories" />
+                    <StatCard label={t('dashboard.orders')} value={stats.orders} icon={ShoppingBag} color="bg-orange-500" link="/admin/orders" />
+                    <StatCard label={t('dashboard.users')} value={stats.users} icon={Users} color="bg-emerald-500" link="/admin/users" />
                 </div>
 
                 {/* Recent Orders */}
@@ -104,24 +106,24 @@ const AdminDashboard = () => {
                     <div className="flex items-center justify-between p-6 border-b border-slate-100">
                         <div className="flex items-center gap-2">
                             <Clock className="w-4 h-4 text-slate-400" />
-                            <h3 className="font-bold text-slate-800">Recent Orders</h3>
+                            <h3 className="font-bold text-slate-800">{t('dashboard.recentOrders')}</h3>
                         </div>
                         <Link to="/admin/orders" className="text-sm text-primary hover:underline font-medium">
-                            View all
+                            {t('dashboard.viewAll')}
                         </Link>
                     </div>
                     {recentOrders.length === 0 ? (
-                        <div className="p-8 text-center text-slate-400">No orders yet.</div>
+                        <div className="p-8 text-center text-slate-400">{t('dashboard.noOrders')}</div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="bg-slate-50 text-left">
-                                        <th className="px-6 py-3 text-slate-500 font-medium">Order #</th>
-                                        <th className="px-6 py-3 text-slate-500 font-medium">Customer</th>
-                                        <th className="px-6 py-3 text-slate-500 font-medium">Total</th>
-                                        <th className="px-6 py-3 text-slate-500 font-medium">Date</th>
-                                        <th className="px-6 py-3 text-slate-500 font-medium">Status</th>
+                                        <th className="px-6 py-3 text-slate-500 font-medium">{t('dashboard.orderNumber')}</th>
+                                        <th className="px-6 py-3 text-slate-500 font-medium">{t('dashboard.customer')}</th>
+                                        <th className="px-6 py-3 text-slate-500 font-medium">{t('dashboard.total')}</th>
+                                        <th className="px-6 py-3 text-slate-500 font-medium">{t('dashboard.date')}</th>
+                                        <th className="px-6 py-3 text-slate-500 font-medium">{t('dashboard.status')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
@@ -137,7 +139,7 @@ const AdminDashboard = () => {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${statusColors[order.status] || "bg-slate-100 text-slate-700"}`}>
-                                                    {order.status}
+                                                    {t(`status.${order.status.toLowerCase()}`)}
                                                 </span>
                                             </td>
                                         </tr>

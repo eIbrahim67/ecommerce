@@ -1,0 +1,35 @@
+{
+  "name": "Nest-Mart - Fresh Organic Groceries",
+  "short_name": "Nest-Mart",
+  "description": "Shop fresh organic groceries at Nest-Mart. Quality products, best prices, and 24/7 service in 10th of Ramadan City, Egypt.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3BB77E",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "food", "lifestyle"],
+  "lang": "en",
+  "dir": "auto",
+  "scope": "/",
+  "screenshots": [
+    {
+      "src": "/screenshot-1.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ]
+}

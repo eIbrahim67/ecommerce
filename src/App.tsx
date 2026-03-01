@@ -8,9 +8,12 @@ import React, { Suspense } from "react";
 import { CartProvider } from "./contexts/CartContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { GlobalLoader } from "./components/GlobalLoader";
 import { ErrorBoundary } from "./components/ErrorFallback";
+import ScrollToTop from "./components/ScrollToTop";
+import "./i18n/config";
 
 // Lazy Loaded Pages
 const Index = React.lazy(() => import("./pages/Index"));
@@ -28,6 +31,11 @@ const Register = React.lazy(() => import("./pages/Register"));
 const Account = React.lazy(() => import("./pages/Account"));
 const ForgotPassword = React.lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = React.lazy(() => import("./pages/ResetPassword"));
+const PaymentCallback = React.lazy(() => import("./pages/PaymentCallback"));
+const PaymentProcessing = React.lazy(() => import("./pages/PaymentProcessing"));
+const OrderConfirmation = React.lazy(() => import("./pages/OrderConfirmation"));
+const Orders = React.lazy(() => import("./pages/Orders"));
+const OrderDetail = React.lazy(() => import("./pages/OrderDetail"));
 
 // Admin Pages
 const AdminDashboard = React.lazy(() => import("./pages/admin/AdminDashboard"));
@@ -42,14 +50,16 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <ErrorBoundary>
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <Suspense fallback={<GlobalLoader />}>
-                  <Routes>
+        <LanguageProvider>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <ScrollToTop />
+                  <Suspense fallback={<GlobalLoader />}>
+                    <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<Index />} />
                     <Route path="/shop" element={<Shop />} />
@@ -59,11 +69,18 @@ const App = () => (
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
 
+                    {/* Public Routes (Cart & Checkout accessible to guests) */}
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/payment-processing" element={<PaymentProcessing />} />
+                    <Route path="/payment-callback" element={<PaymentCallback />} />
+                    <Route path="/order/:orderId/confirmation" element={<OrderConfirmation />} />
+
                     {/* Protected Routes */}
-                    <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
-                    <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
                     <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
                     <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+                    <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+                    <Route path="/orders/:orderId" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
 
                     {/* Auth helpers */}
                     <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -77,12 +94,13 @@ const App = () => (
                     <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
 
                     <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
-              </BrowserRouter>
-            </WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
+                    </Routes>
+                  </Suspense>
+                </BrowserRouter>
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </ErrorBoundary>
     </TooltipProvider>
   </QueryClientProvider>

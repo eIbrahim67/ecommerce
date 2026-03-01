@@ -1,0 +1,44 @@
+{
+  "pageTitle": "My Orders",
+  "pageDescription": "View and track all your orders",
+  "loading": "Loading your orders...",
+  "noOrders": {
+    "title": "No Orders Yet",
+    "description": "Start shopping to create your first order",
+    "button": "Start Shopping"
+  },
+  "orderCard": {
+    "orderNumber": "Order #",
+    "orderDate": "Order Date",
+    "items": "Items",
+    "item": "item",
+    "total": "Total",
+    "shippingTo": "Shipping to",
+    "orderItems": "Order Items",
+    "more": "more"
+  },
+  "orderDetail": {
+    "title": "Order",
+    "notFound": "Order Not Found",
+    "notFoundDescription": "The order you're looking for doesn't exist.",
+    "backToOrders": "Back to Orders",
+    "orderStatus": "Order Status",
+    "orderedOn": "Ordered on",
+    "orderItems": "Order Items",
+    "quantity": "Quantity",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "free": "Free",
+    "total": "Total",
+    "shippingAddress": "Shipping Address",
+    "contactInformation": "Contact Information",
+    "orderId": "Order ID"
+  },
+  "status": {
+    "pending": "Pending",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  }
+}

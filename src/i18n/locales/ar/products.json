@@ -1,0 +1,75 @@
+{
+  "allCategories": "جميع الفئات",
+  "allProducts": "جميع المنتجات",
+  "shopByCategory": "تسوق حسب الفئة",
+  "findWhatYouNeed": "اعثر على ما تبحث عنه بالضبط",
+  "filterByPrice": "تصفية حسب السعر",
+  "clearAllFilters": "مسح جميع الفلاتر",
+  "weFound": "وجدنا",
+  "itemsForYou": "منتج لك!",
+  "noProductsFound": "لم يتم العثور على منتجات",
+  "tryAdjustingFilters": "حاول تعديل الفلاتر أو استعلام البحث.",
+  "from": "من",
+  "to": "إلى",
+  "badges": {
+    "sale": "تخفيض",
+    "hot": "ساخن",
+    "new": "جديد",
+    "discount": "خصم"
+  },
+  "labels": {
+    "category": "الفئة",
+    "price": "السعر",
+    "inStock": "متوفر",
+    "outOfStock": "غير متوفر"
+  },
+  "sorting": {
+    "sortBy": "ترتيب حسب",
+    "featured": "مميز",
+    "newest": "الأحدث",
+    "priceLowToHigh": "السعر: من الأقل إلى الأعلى",
+    "priceHighToLow": "السعر: من الأعلى إلى الأقل",
+    "topRated": "الأعلى تقييماً"
+  },
+  "messages": {
+    "noProducts": "لم يتم العثور على منتجات"
+  },
+  "detail": {
+    "reviews": "تقييم",
+    "off": "خصم",
+    "noDescription": "لا يوجد وصف متاح.",
+    "options": "الخيارات",
+    "addToCart": "أضف إلى السلة",
+    "adding": "جاري الإضافة...",
+    "brand": "العلامة التجارية",
+    "type": "النوع",
+    "category": "الفئة",
+    "sku": "رمز المنتج",
+    "tags": "الوسوم",
+    "stock": "المخزون",
+    "itemsInStock": "قطعة متوفرة",
+    "outOfStock": "غير متوفر",
+    "tabs": {
+      "description": "الوصف",
+      "additionalInfo": "معلومات إضافية",
+      "vendor": "البائع",
+      "reviews": "التقييمات"
+    },
+    "vendorInfo": "معلومات البائع",
+    "vendorName": "اسم البائع",
+    "customerQA": "أسئلة وأجوبة العملاء",
+    "noReviews": "لا توجد تقييمات بعد. كن أول من يقيم هذا المنتج!",
+    "addReview": "أضف تقييماً",
+    "yourRating": "تقييمك",
+    "yourReview": "تقييمك",
+    "reviewPlaceholder": "اكتب تقييمك هنا...",
+    "submitReview": "إرسال التقييم",
+    "submitting": "جاري الإرسال...",
+    "relatedProducts": "منتجات ذات صلة",
+    "productNotFound": "المنتج غير موجود",
+    "returnToShop": "العودة إلى المتجر",
+    "loginToReview": "يرجى تسجيل الدخول لإضافة تقييم.",
+    "reviewRequired": "التعليق مطلوب.",
+    "reviewSuccess": "تم إرسال التقييم بنجاح!"
+  }
+}

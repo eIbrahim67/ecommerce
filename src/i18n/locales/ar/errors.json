@@ -1,0 +1,10 @@
+{
+  "validation": {
+    "required": "هذا الحقل مطلوب",
+    "invalidEmail": "عنوان البريد الإلكتروني غير صالح"
+  },
+  "api": {
+    "networkError": "حدث خطأ في الشبكة",
+    "serverError": "حدث خطأ في الخادم"
+  }
+}

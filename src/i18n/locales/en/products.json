@@ -1,0 +1,75 @@
+{
+  "allCategories": "All Categories",
+  "allProducts": "All Products",
+  "shopByCategory": "Shop by Category",
+  "findWhatYouNeed": "Find exactly what you're looking for",
+  "filterByPrice": "Filter by Price",
+  "clearAllFilters": "Clear All Filters",
+  "weFound": "We found",
+  "itemsForYou": "items for you!",
+  "noProductsFound": "No products found",
+  "tryAdjustingFilters": "Try adjusting your filters or search query.",
+  "from": "From",
+  "to": "To",
+  "badges": {
+    "sale": "Sale",
+    "hot": "Hot",
+    "new": "New",
+    "discount": "Discount"
+  },
+  "labels": {
+    "category": "Category",
+    "price": "Price",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock"
+  },
+  "sorting": {
+    "sortBy": "Sort by",
+    "featured": "Featured",
+    "newest": "Newest",
+    "priceLowToHigh": "Price: Low to High",
+    "priceHighToLow": "Price: High to Low",
+    "topRated": "Top Rated"
+  },
+  "messages": {
+    "noProducts": "No products found"
+  },
+  "detail": {
+    "reviews": "reviews",
+    "off": "Off",
+    "noDescription": "No description provided.",
+    "options": "Options",
+    "addToCart": "Add to cart",
+    "adding": "Adding...",
+    "brand": "Brand",
+    "type": "Type",
+    "category": "Category",
+    "sku": "SKU",
+    "tags": "Tags",
+    "stock": "Stock",
+    "itemsInStock": "Items In Stock",
+    "outOfStock": "Out of Stock",
+    "tabs": {
+      "description": "Description",
+      "additionalInfo": "Additional info",
+      "vendor": "Vendor",
+      "reviews": "Reviews"
+    },
+    "vendorInfo": "Vendor Information",
+    "vendorName": "Vendor Name",
+    "customerQA": "Customer questions & answers",
+    "noReviews": "No reviews yet. Be the first to review this product!",
+    "addReview": "Add a review",
+    "yourRating": "Your Rating",
+    "yourReview": "Your Review",
+    "reviewPlaceholder": "Write your review here...",
+    "submitReview": "Submit Review",
+    "submitting": "Submitting...",
+    "relatedProducts": "Related products",
+    "productNotFound": "Product not found",
+    "returnToShop": "Return to Shop",
+    "loginToReview": "Please login to submit a review.",
+    "reviewRequired": "Review comment is required.",
+    "reviewSuccess": "Review submitted successfully!"
+  }
+}

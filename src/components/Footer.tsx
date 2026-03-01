@@ -1,41 +1,103 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const Footer = () => {
+  const { t } = useLanguage();
+  
   return (
-    <footer className="bg-surface-light border-t border-border">
-      <div className="container mx-auto py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
+    <footer className="bg-gradient-to-br from-surface-light to-white border-t border-border mt-16">
+      <div className="container mx-auto py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
         {/* Brand */}
         <div className="lg:col-span-2">
-          <Link to="/" className="flex items-center gap-2 mb-4">
-            <span className="text-3xl">🛒</span>
+          <Link to="/" className="flex items-center gap-3 mb-6 group">
+            <span className="text-4xl group-hover:scale-110 transition-transform">🛒</span>
             <div>
-              <h3 className="text-xl font-bold leading-none">Nest</h3>
-              <span className="text-xs text-text-body">MART & GROCERY</span>
+              <h3 className="text-2xl font-bold leading-none text-heading">Nest-Mart</h3>
+              <span className="text-xs text-text-body tracking-widest font-semibold uppercase">Grocery</span>
             </div>
           </Link>
-          <p className="text-sm text-text-body mb-4">Awesome grocery store website template</p>
-          <div className="space-y-2 text-sm text-text-body">
-            <div className="flex items-start gap-2"><MapPin className="w-4 h-4 text-primary mt-0.5 shrink-0" /> 5171 W Campbell Ave, Kent, Utah 53127</div>
-            <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary shrink-0" /> (+91) - 540-025-124553</div>
-            <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-primary shrink-0" /> sale@Nest.com</div>
-            <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary shrink-0" /> 10:00 - 18:00, Mon - Sat</div>
+          <p className="text-sm text-text-body mb-6 leading-relaxed">{t('navigation:footer.tagline')}</p>
+          <div className="space-y-3 text-sm text-text-body">
+            <a 
+              href="https://maps.app.goo.gl/59LfdwQNFngE7GJt7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-3 hover:text-primary transition-colors"
+            >
+              <MapPin className="w-5 h-5 text-primary mt-0.5 shrink-0" /> 
+              <span>A Market (El Ordonia Branch), 10th of Ramadan City 1, Al-Sharqia Governorate 7063112, Egypt</span>
+            </a>
+            <a 
+              href="tel:+201550162282"
+              className="flex items-center gap-3 hover:text-primary transition-colors"
+            >
+              <Phone className="w-5 h-5 text-primary shrink-0" /> 
+              <span dir="ltr">+201550162282</span>
+            </a>
+            <a 
+              href="mailto:contact@nestmart.com"
+              className="flex items-center gap-3 hover:text-primary transition-colors"
+            >
+              <Mail className="w-5 h-5 text-primary shrink-0" /> 
+              <span>contact@nestmart.com</span>
+            </a>
+            <div className="flex items-center gap-3 hover:text-primary transition-colors">
+              <Clock className="w-5 h-5 text-primary shrink-0" /> 
+              <span>{t('navigation:footer.hours')}</span>
+            </div>
           </div>
         </div>
 
         {/* Links */}
         {[
-          { title: "Company", links: ["About Us", "Delivery Information", "Privacy Policy", "Terms & Conditions", "Contact Us"] },
-          { title: "Account", links: ["Sign In", "View Cart", "My Wishlist", "Track My Order", "Help Ticket"] },
-          { title: "Corporate", links: ["Become a Vendor", "Affiliate Program", "Farm Business", "Farm Careers", "Our Suppliers"] },
-          { title: "Popular", links: ["Milk & Flavoured Milk", "Butter and Margarine", "Eggs Substitutes", "Marmalades", "Sour Cream and Dips"] },
+          { 
+            title: t('navigation:footer.company'), 
+            links: [
+              { key: 'aboutUs', label: t('navigation:footer.links.aboutUs') },
+              { key: 'deliveryInfo', label: t('navigation:footer.links.deliveryInfo') },
+              { key: 'privacyPolicy', label: t('navigation:footer.links.privacyPolicy') },
+              { key: 'termsConditions', label: t('navigation:footer.links.termsConditions') },
+              { key: 'contactUs', label: t('navigation:footer.links.contactUs') }
+            ]
+          },
+          { 
+            title: t('navigation:footer.account'), 
+            links: [
+              { key: 'signIn', label: t('navigation:footer.links.signIn') },
+              { key: 'viewCart', label: t('navigation:footer.links.viewCart') },
+              { key: 'myWishlist', label: t('navigation:footer.links.myWishlist') },
+              { key: 'trackOrder', label: t('navigation:footer.links.trackOrder') },
+              { key: 'helpTicket', label: t('navigation:footer.links.helpTicket') }
+            ]
+          },
+          { 
+            title: t('navigation:footer.corporate'), 
+            links: [
+              { key: 'becomeVendor', label: t('navigation:footer.links.becomeVendor') },
+              { key: 'affiliateProgram', label: t('navigation:footer.links.affiliateProgram') },
+              { key: 'farmBusiness', label: t('navigation:footer.links.farmBusiness') },
+              { key: 'farmCareers', label: t('navigation:footer.links.farmCareers') },
+              { key: 'ourSuppliers', label: t('navigation:footer.links.ourSuppliers') }
+            ]
+          },
+          { 
+            title: t('navigation:footer.popular'), 
+            links: [
+              { key: 'milk', label: t('navigation:footer.links.milk') },
+              { key: 'butter', label: t('navigation:footer.links.butter') },
+              { key: 'eggs', label: t('navigation:footer.links.eggs') },
+              { key: 'marmalades', label: t('navigation:footer.links.marmalades') },
+              { key: 'sourCream', label: t('navigation:footer.links.sourCream') }
+            ]
+          }
         ].map((col) => (
           <div key={col.title}>
-            <h4 className="font-bold text-base mb-4">{col.title}</h4>
-            <ul className="space-y-2">
+            <h4 className="font-bold text-base mb-5 text-heading" style={{ fontFamily: "'Quicksand', sans-serif" }}>{col.title}</h4>
+            <ul className="space-y-3">
               {col.links.map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-sm text-text-body hover:text-primary transition-colors">{link}</a>
+                <li key={link.key}>
+                  <a href="#" className="text-sm text-text-body hover:text-primary hover:translate-x-1 inline-block transition-all">{link.label}</a>
                 </li>
               ))}
             </ul>
@@ -44,12 +106,17 @@ const Footer = () => {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-border">
-        <div className="container mx-auto py-4 flex flex-col md:flex-row items-center justify-between text-sm text-text-body">
-          <p>© 2024, Nest - Grocery Store. All rights reserved.</p>
-          <div className="flex items-center gap-4 mt-2 md:mt-0">
-            <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> <strong>1900 - 6666</strong></div>
-            <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> <strong>1900 - 8888</strong></div>
+      <div className="border-t border-border bg-white/50">
+        <div className="container mx-auto py-6 flex flex-col md:flex-row items-center justify-between text-sm text-text-body gap-4">
+          <p>{t('navigation:footer.copyright')}</p>
+          <div className="flex items-center gap-6">
+            <a 
+              href="tel:+201550162282"
+              className="flex items-center gap-2 hover:text-primary transition-colors"
+            >
+              <Phone className="w-4 h-4 text-primary" /> 
+              <strong dir="ltr">+201550162282</strong>
+            </a>
           </div>
         </div>
       </div>

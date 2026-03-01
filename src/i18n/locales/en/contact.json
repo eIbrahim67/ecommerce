@@ -1,0 +1,54 @@
+{
+  "pageTitle": "Contact Us",
+  "pageDescription": "Get in touch with us for any questions or concerns",
+  "helpSection": {
+    "subtitle": "How can we help you?",
+    "title": "Let us know how we can help you",
+    "description": "We are always happy to hear from you. Feel free to contact us regarding any questions or concerns."
+  },
+  "helpItems": {
+    "visitFeedback": {
+      "title": "Visit Feedback",
+      "description": "Let us know about your in-store experience."
+    },
+    "employerServices": {
+      "title": "Employer Services",
+      "description": "For corporate inquiries and bulk orders."
+    },
+    "billingInquiries": {
+      "title": "Billing Inquiries",
+      "description": "Questions related to payments and invoices."
+    },
+    "generalInquiries": {
+      "title": "General Inquiries",
+      "description": "Anything else you have on your mind."
+    }
+  },
+  "map": {
+    "placeholder": "Map Placeholder"
+  },
+  "offices": {
+    "office": "Office",
+    "studio": "Studio",
+    "shop": "Shop",
+    "phone": "Phone",
+    "email": "Email",
+    "viewMap": "View map",
+    "workingHours": "Working Hours",
+    "hours24": "Open 24 hours, all days"
+  },
+  "form": {
+    "subtitle": "Contact form",
+    "title": "Drop Us a Line",
+    "namePlaceholder": "Your Name *",
+    "emailPlaceholder": "Your Email *",
+    "phonePlaceholder": "Your Phone",
+    "subjectPlaceholder": "Subject",
+    "messagePlaceholder": "Your message... *",
+    "sendButton": "Send message",
+    "sending": "Sending...",
+    "successMessage": "Your message has been sent successfully!",
+    "errorMessage": "Failed to send message. Please try again later.",
+    "requiredFields": "Please fill in the required fields (Name, Email, Message)."
+  }
+}

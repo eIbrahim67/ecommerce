@@ -3,6 +3,7 @@ import AdminLayout from "./AdminLayout";
 import { api, unwrapResponse } from "@/lib/api";
 import { Plus, Pencil, Trash2, X, Upload, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface Variant {
     id?: number;
@@ -17,19 +18,24 @@ interface Variant {
 interface Product {
     id: number;
     name: string;
+    nameAr?: string | null;
     brand: string;
+    brandAr?: string | null;
     basePrice: number;
     compareAtPrice: number | null;
     badge: string | null;
+    badgeAr?: string | null;
     discountPercent: number | null;
     categoryId: number;
     sku: string;
     type: string;
     vendor: string;
     description: string;
+    descriptionAr?: string | null;
     primaryImageUrl: string;
     isDeleted?: boolean;
     variants: Variant[];
+    tags?: string[];
 }
 
 interface Category {
@@ -39,20 +45,26 @@ interface Category {
 
 const EMPTY_PRODUCT: Omit<Product, "id" | "primaryImageUrl"> = {
     name: "",
+    nameAr: null,
     brand: "",
+    brandAr: null,
     basePrice: 0,
     compareAtPrice: null,
     badge: null,
+    badgeAr: null,
     discountPercent: null,
     categoryId: 1,
     sku: "",
     type: "",
     vendor: "",
     description: "",
+    descriptionAr: null,
     variants: [{ sku: "", color: "Default", weight: 100, size: null, stockQuantity: 10, priceAdjustment: 0 }],
+    tags: [],
 };
 
 const AdminProducts = () => {
+    const { t } = useTranslation('admin');
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -76,7 +88,7 @@ const AdminProducts = () => {
             setProducts(env.data || []);
             setTotalPages(Math.max(1, Math.ceil((env.totalCount || 0) / PAGE_SIZE)));
         } catch (e) {
-            toast.error("Failed to load products");
+            toast.error(t('products.loadFailed'));
         } finally {
             setIsLoading(false);
         }
@@ -101,15 +113,40 @@ const AdminProducts = () => {
         setShowModal(true);
     };
 
-    const openEdit = (p: Product) => {
-        setEditingProduct(p);
-        setFormData({
-            name: p.name, brand: p.brand, basePrice: p.basePrice, compareAtPrice: p.compareAtPrice,
-            badge: p.badge, discountPercent: p.discountPercent, categoryId: p.categoryId,
-            sku: p.sku, type: p.type, vendor: p.vendor, description: p.description, variants: p.variants,
-        });
-        setImageUrl(p.primaryImageUrl || "");
-        setShowModal(true);
+    const openEdit = async (p: Product) => {
+        try {
+            // Fetch full product details to ensure we have all data including variants
+            const res = await api.get(`/admin/products/${p.id}`);
+            const env = unwrapResponse(res.data);
+            const fullProduct = env.data;
+            
+            setEditingProduct(fullProduct);
+            setFormData({
+                name: fullProduct.name,
+                nameAr: fullProduct.nameAr,
+                brand: fullProduct.brand,
+                brandAr: fullProduct.brandAr,
+                basePrice: fullProduct.basePrice,
+                compareAtPrice: fullProduct.compareAtPrice,
+                badge: fullProduct.badge,
+                badgeAr: fullProduct.badgeAr,
+                discountPercent: fullProduct.discountPercent,
+                categoryId: fullProduct.categoryId,
+                sku: fullProduct.sku,
+                type: fullProduct.type,
+                vendor: fullProduct.vendor,
+                description: fullProduct.description,
+                descriptionAr: fullProduct.descriptionAr,
+                variants: fullProduct.variants && fullProduct.variants.length > 0 
+                    ? fullProduct.variants 
+                    : [{ sku: "", color: "Default", weight: 100, size: null, stockQuantity: 10, priceAdjustment: 0 }],
+                tags: fullProduct.tags || [],
+            });
+            setImageUrl(fullProduct.imageUrls?.[0] || fullProduct.primaryImageUrl || "");
+            setShowModal(true);
+        } catch (e) {
+            toast.error(t('products.loadFailed'));
+        }
     };
 
     const handleImageUpload = async (file: File) => {
@@ -120,9 +157,9 @@ const AdminProducts = () => {
             const res = await api.post("/admin/products/upload-image", fd, { headers: { "Content-Type": "multipart/form-data" } });
             const env = unwrapResponse(res.data);
             setImageUrl(env.data);
-            toast.success("Image uploaded!");
+            toast.success(t('products.imageUploaded'));
         } catch {
-            toast.error("Image upload failed");
+            toast.error(t('products.imageUploadFailed'));
         } finally {
             setIsUploading(false);
         }
@@ -130,7 +167,7 @@ const AdminProducts = () => {
 
     const handleSave = async () => {
         if (!formData.name || !formData.brand || !formData.sku) {
-            toast.error("Name, brand and SKU are required");
+            toast.error(t('products.nameRequired'));
             return;
         }
         setIsSaving(true);
@@ -142,28 +179,28 @@ const AdminProducts = () => {
             };
             if (editingProduct) {
                 await api.put(`/admin/products/${editingProduct.id}`, payload);
-                toast.success("Product updated!");
+                toast.success(t('products.productUpdated'));
             } else {
                 await api.post("/admin/products", payload);
-                toast.success("Product created!");
+                toast.success(t('products.productCreated'));
             }
             setShowModal(false);
             fetchProducts();
         } catch (e: any) {
-            toast.error(e.message || "Save failed");
+            toast.error(e.message || t('products.saveFailed'));
         } finally {
             setIsSaving(false);
         }
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Delete this product?")) return;
+        if (!confirm(t('products.deleteConfirm'))) return;
         try {
             await api.delete(`/admin/products/${id}`);
-            toast.success("Product deleted");
+            toast.success(t('products.productDeleted'));
             fetchProducts();
         } catch {
-            toast.error("Delete failed");
+            toast.error(t('products.deleteFailed'));
         }
     };
 
@@ -173,14 +210,14 @@ const AdminProducts = () => {
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-800">Products</h2>
-                        <p className="text-slate-500 text-sm">Manage your product catalog</p>
+                        <h2 className="text-2xl font-bold text-slate-800">{t('products.title')}</h2>
+                        <p className="text-slate-500 text-sm">{t('products.subtitle')}</p>
                     </div>
                     <button
                         onClick={openCreate}
                         className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity"
                     >
-                        <Plus className="w-4 h-4" /> Add Product
+                        <Plus className="w-4 h-4" /> {t('products.addProduct')}
                     </button>
                 </div>
 
@@ -189,7 +226,7 @@ const AdminProducts = () => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input
                         type="text"
-                        placeholder="Search products..."
+                        placeholder={t('products.searchPlaceholder')}
                         value={search}
                         onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                         className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-primary"
@@ -207,11 +244,11 @@ const AdminProducts = () => {
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="bg-slate-50 text-left">
-                                        <th className="px-4 py-3 text-slate-500 font-medium">Product</th>
-                                        <th className="px-4 py-3 text-slate-500 font-medium">SKU</th>
-                                        <th className="px-4 py-3 text-slate-500 font-medium">Price</th>
-                                        <th className="px-4 py-3 text-slate-500 font-medium">Badge</th>
-                                        <th className="px-4 py-3 text-slate-500 font-medium">Actions</th>
+                                        <th className="px-4 py-3 text-slate-500 font-medium">{t('products.product')}</th>
+                                        <th className="px-4 py-3 text-slate-500 font-medium">{t('products.sku')}</th>
+                                        <th className="px-4 py-3 text-slate-500 font-medium">{t('products.price')}</th>
+                                        <th className="px-4 py-3 text-slate-500 font-medium">{t('products.badge')}</th>
+                                        <th className="px-4 py-3 text-slate-500 font-medium">{t('products.actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
@@ -265,7 +302,7 @@ const AdminProducts = () => {
                     {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100">
-                            <p className="text-sm text-slate-500">Page {page} of {totalPages}</p>
+                            <p className="text-sm text-slate-500">{t('products.page')} {page} {t('products.of')} {totalPages}</p>
                             <div className="flex gap-2">
                                 <button
                                     disabled={page === 1}
@@ -292,7 +329,7 @@ const AdminProducts = () => {
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl my-4">
                         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                            <h3 className="font-bold text-slate-800 text-lg">{editingProduct ? "Edit Product" : "Create Product"}</h3>
+                            <h3 className="font-bold text-slate-800 text-lg">{editingProduct ? t('products.editProduct') : t('products.createProduct')}</h3>
                             <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors">
                                 <X className="w-5 h-5 text-slate-500" />
                             </button>
@@ -300,7 +337,7 @@ const AdminProducts = () => {
                         <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
                             {/* Image Upload */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Product Image</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-2">{t('products.productImage')}</label>
                                 <div className="flex items-center gap-3">
                                     {imageUrl && (
                                         <img src={imageUrl} alt="Preview" className="w-16 h-16 rounded-xl object-cover border border-slate-200" />
@@ -312,7 +349,7 @@ const AdminProducts = () => {
                                         className="flex items-center gap-2 px-4 py-2 border border-dashed border-slate-300 rounded-xl text-sm text-slate-500 hover:border-primary hover:text-primary transition-colors disabled:opacity-50"
                                     >
                                         <Upload className="w-4 h-4" />
-                                        {isUploading ? "Uploading..." : "Upload Image"}
+                                        {isUploading ? t('products.uploading') : t('products.upload')}
                                     </button>
                                     <input
                                         ref={fileInputRef}
@@ -324,7 +361,7 @@ const AdminProducts = () => {
                                     {!imageUrl && (
                                         <input
                                             type="text"
-                                            placeholder="Or paste URL"
+                                            placeholder={t('products.orPasteUrl')}
                                             className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary"
                                             onBlur={(e) => setImageUrl(e.target.value)}
                                         />
@@ -334,12 +371,20 @@ const AdminProducts = () => {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="col-span-2">
-                                    <label className="block text-xs font-medium text-slate-500 mb-1">Name *</label>
+                                    <label className="block text-xs font-medium text-slate-500 mb-1">Name (English) *</label>
                                     <input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" />
                                 </div>
+                                <div className="col-span-2">
+                                    <label className="block text-xs font-medium text-slate-500 mb-1">Name (Arabic)</label>
+                                    <input value={formData.nameAr ?? ""} onChange={e => setFormData({ ...formData, nameAr: e.target.value || null })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" dir="rtl" />
+                                </div>
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-500 mb-1">Brand *</label>
+                                    <label className="block text-xs font-medium text-slate-500 mb-1">Brand (English) *</label>
                                     <input value={formData.brand} onChange={e => setFormData({ ...formData, brand: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-500 mb-1">Brand (Arabic)</label>
+                                    <input value={formData.brandAr ?? ""} onChange={e => setFormData({ ...formData, brandAr: e.target.value || null })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" dir="rtl" />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-medium text-slate-500 mb-1">Vendor</label>
@@ -362,14 +407,17 @@ const AdminProducts = () => {
                                     <input type="number" step="0.01" value={formData.compareAtPrice ?? ""} onChange={e => setFormData({ ...formData, compareAtPrice: e.target.value ? parseFloat(e.target.value) : null })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-500 mb-1">Badge</label>
-                                    <select value={formData.badge ?? ""} onChange={e => setFormData({ ...formData, badge: e.target.value || null })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary">
-                                        <option value="">None</option>
-                                        <option value="hot">Hot</option>
-                                        <option value="new">New</option>
-                                        <option value="sale">Sale</option>
-                                        <option value="discount">Discount</option>
-                                    </select>
+                                    <label className="block text-xs font-medium text-slate-500 mb-1">Badge (English)</label>
+                                    <input 
+                                        value={formData.badge ?? ""} 
+                                        onChange={e => setFormData({ ...formData, badge: e.target.value || null })} 
+                                        className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" 
+                                        placeholder="Hot, New, Sale, Fresh, etc."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-medium text-slate-500 mb-1">Badge (Arabic)</label>
+                                    <input value={formData.badgeAr ?? ""} onChange={e => setFormData({ ...formData, badgeAr: e.target.value || null })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" dir="rtl" placeholder="ساخن، جديد، تخفيض" />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-medium text-slate-500 mb-1">Discount %</label>
@@ -383,8 +431,23 @@ const AdminProducts = () => {
                                 </div>
 
                                 <div className="col-span-2">
-                                    <label className="block text-xs font-medium text-slate-500 mb-1">Description</label>
+                                    <label className="block text-xs font-medium text-slate-500 mb-1">Description (English)</label>
                                     <textarea rows={3} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary resize-none" />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <label className="block text-xs font-medium text-slate-500 mb-1">Description (Arabic)</label>
+                                    <textarea rows={3} value={formData.descriptionAr ?? ""} onChange={e => setFormData({ ...formData, descriptionAr: e.target.value || null })} className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary resize-none" dir="rtl" />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <label className="block text-xs font-medium text-slate-500 mb-1">Tags (comma-separated)</label>
+                                    <input 
+                                        value={Array.isArray(formData.tags) ? formData.tags.join(", ") : ""} 
+                                        onChange={e => setFormData({ ...formData, tags: e.target.value.split(",").map(t => t.trim()).filter(Boolean) })} 
+                                        className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-primary" 
+                                        placeholder="organic, fresh, local"
+                                    />
                                 </div>
 
                                 {/* Variants */}
@@ -396,6 +459,7 @@ const AdminProducts = () => {
                                             <input type="number" placeholder="Weight(g)" value={v.weight} onChange={e => { const vs = [...formData.variants]; vs[idx] = { ...vs[idx], weight: parseInt(e.target.value) }; setFormData({ ...formData, variants: vs }); }} className="border border-slate-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-primary" />
                                             <input type="number" placeholder="Stock" value={v.stockQuantity} onChange={e => { const vs = [...formData.variants]; vs[idx] = { ...vs[idx], stockQuantity: parseInt(e.target.value) }; setFormData({ ...formData, variants: vs }); }} className="border border-slate-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-primary" />
                                             <input placeholder="SKU" value={v.sku} onChange={e => { const vs = [...formData.variants]; vs[idx] = { ...vs[idx], sku: e.target.value }; setFormData({ ...formData, variants: vs }); }} className="border border-slate-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-primary" />
+                                            <input placeholder="Size" value={v.size ?? ""} onChange={e => { const vs = [...formData.variants]; vs[idx] = { ...vs[idx], size: e.target.value || null }; setFormData({ ...formData, variants: vs }); }} className="border border-slate-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-primary" />
                                             <input type="number" step="0.01" placeholder="Price adj." value={v.priceAdjustment} onChange={e => { const vs = [...formData.variants]; vs[idx] = { ...vs[idx], priceAdjustment: parseFloat(e.target.value) }; setFormData({ ...formData, variants: vs }); }} className="border border-slate-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-primary" />
                                             {formData.variants.length > 1 && (
                                                 <button type="button" onClick={() => setFormData({ ...formData, variants: formData.variants.filter((_: any, i: number) => i !== idx) })} className="text-red-400 hover:text-red-600 transition-colors text-xs flex items-center gap-1">
@@ -412,14 +476,14 @@ const AdminProducts = () => {
                         </div>
                         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100">
                             <button onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">
-                                Cancel
+                                {t('products.cancel')}
                             </button>
                             <button
                                 onClick={handleSave}
                                 disabled={isSaving}
                                 className="px-6 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
                             >
-                                {isSaving ? "Saving..." : editingProduct ? "Update" : "Create"}
+                                {isSaving ? t('products.saving') : editingProduct ? t('products.update') : t('products.create')}
                             </button>
                         </div>
                     </div>

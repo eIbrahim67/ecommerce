@@ -3,97 +3,251 @@ import Footer from "@/components/Footer";
 import { useCart } from "@/contexts/CartContext";
 import { Link } from "react-router-dom";
 import { Trash2, Plus, Minus, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
+import { formatCurrency } from "@/i18n/formatters";
+import { getLocalizedText } from "@/utils/localization";
 
 const Cart = () => {
     const { items, updateQuantity, removeFromCart, cartTotal } = useCart();
+    const [updatingItems, setUpdatingItems] = useState<Set<number>>(new Set());
+    const [removingItems, setRemovingItems] = useState<Set<number>>(new Set());
+    const { t, currentLanguage } = useLanguage();
+
+    const handleUpdateQuantity = async (itemId: number, newQuantity: number) => {
+        if (updatingItems.has(itemId)) return;
+        setUpdatingItems(prev => new Set(prev).add(itemId));
+        try {
+            await updateQuantity(itemId, newQuantity);
+        } finally {
+            setTimeout(() => {
+                setUpdatingItems(prev => {
+                    const next = new Set(prev);
+                    next.delete(itemId);
+                    return next;
+                });
+            }, 300);
+        }
+    };
+
+    const handleRemove = async (itemId: number) => {
+        if (removingItems.has(itemId)) return;
+        setRemovingItems(prev => new Set(prev).add(itemId));
+        try {
+            await removeFromCart(itemId);
+        } finally {
+            setTimeout(() => {
+                setRemovingItems(prev => {
+                    const next = new Set(prev);
+                    next.delete(itemId);
+                    return next;
+                });
+            }, 500);
+        }
+    };
 
     return (
-        <div className="min-h-screen flex flex-col bg-background">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-background to-surface-light">
             <Header />
-            <main className="flex-1 container mx-auto py-8">
+            <main className="flex-1 container mx-auto py-12 px-4">
                 {items.length === 0 ? (
-                    <div className="text-center py-16 bg-surface-light rounded-xl border border-border">
-                        <div className="text-6xl mb-4">🛒</div>
-                        <h2 className="text-xl font-bold mb-2">Your cart is empty</h2>
-                        <p className="text-text-body mb-6">Looks like you haven't added any items to the cart yet.</p>
-                        <Link to="/shop" className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold inline-block hover:opacity-90 transition-opacity">
-                            Return to Shop
+                    <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-border shadow-xl">
+                        <div className="text-8xl mb-6 animate-bounce">🛒</div>
+                        <h2 className="text-3xl font-bold mb-3" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('cart:emptyTitle')}</h2>
+                        <p className="text-text-body mb-8 text-lg">{t('cart:emptyMessage')}</p>
+                        <Link to="/shop" className="bg-primary text-primary-foreground px-10 py-4 rounded-xl font-bold inline-flex items-center gap-2 hover:scale-105 transition-all shadow-lg">
+                            {t('cart:startShopping')} <ArrowRight className="w-5 h-5" />
                         </Link>
                     </div>
                 ) : (
                     <div className="flex flex-col lg:flex-row gap-8">
                         <div className="flex-1">
-                            <div className="bg-card border border-border rounded-xl overflow-hidden">
+                            {/* Desktop Table View */}
+                            <div className="hidden md:block bg-white border border-border rounded-3xl overflow-hidden shadow-xl">
+                                <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-6 py-4 border-b border-border">
+                                    <h2 className="text-2xl font-bold" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('cart:title')}</h2>
+                                    <p className="text-sm text-text-body mt-1">{t('cart:itemsCount', { count: items.length })}</p>
+                                </div>
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-surface-light border-b border-border text-sm text-text-body font-medium">
-                                            <th className="p-4">Product</th>
-                                            <th className="p-4">Unit Price</th>
-                                            <th className="p-4">Quantity</th>
-                                            <th className="p-4">Subtotal</th>
-                                            <th className="p-4">Remove</th>
+                                        <tr className="bg-surface-light border-b border-border text-sm text-text-body font-bold">
+                                            <th className="p-5">{t('cart:labels.product')}</th>
+                                            <th className="p-5">{t('cart:labels.unitPrice')}</th>
+                                            <th className="p-5">{t('cart:labels.quantity')}</th>
+                                            <th className="p-5">{t('cart:labels.subtotal')}</th>
+                                            <th className="p-5">{t('cart:labels.remove')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {items.map((item) => (
-                                            <tr key={item.id} className="border-b border-border last:border-0">
-                                                <td className="p-4">
-                                                    <div className="flex items-center gap-4">
-                                                        <img src={item.imageUrl} alt={item.productName} className="w-16 h-16 rounded-lg object-cover border border-border" />
-                                                        <div>
-                                                            <Link to={`/product/${item.productId}`} className="font-bold hover:text-primary transition-colors line-clamp-1">
-                                                                {item.productName}
-                                                            </Link>
-                                                            {item.variantName && <p className="text-xs text-text-body mt-1">Variant: {item.variantName}</p>}
+                                        {items.map((item) => {
+                                            const isUpdating = updatingItems.has(item.id);
+                                            const isRemoving = removingItems.has(item.id);
+                                            const productName = getLocalizedText(item.productName, item.productNameAr, currentLanguage);
+                                            
+                                            return (
+                                                <tr key={item.id} className={`border-b border-border last:border-0 hover:bg-surface-light/50 transition-colors ${isRemoving ? 'opacity-50' : ''}`}>
+                                                    <td className="p-5">
+                                                        <div className="flex items-center gap-5">
+                                                            <img src={item.imageUrl} alt={productName} className="w-20 h-20 rounded-xl object-cover border-2 border-border shadow-md" />
+                                                            <div>
+                                                                <Link to={`/product/${item.productId}`} className="font-bold text-lg hover:text-primary transition-colors line-clamp-1">
+                                                                    {productName}
+                                                                </Link>
+                                                                {item.variantName && <p className="text-sm text-text-body mt-1 font-medium">{t('cart:labels.variant')}: {item.variantName}</p>}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                                <td className="p-4 font-semibold">${item.unitPrice.toFixed(2)}</td>
-                                                <td className="p-4">
-                                                    <div className="flex items-center border border-border rounded-lg w-max shrink-0">
-                                                        <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 text-text-body hover:text-primary transition-colors"><Minus className="w-3 h-3" /></button>
-                                                        <span className="w-8 text-center text-sm font-semibold">{item.quantity}</span>
-                                                        <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 text-text-body hover:text-primary transition-colors"><Plus className="w-3 h-3" /></button>
-                                                    </div>
-                                                </td>
-                                                <td className="p-4 font-bold text-primary">${item.totalPrice.toFixed(2)}</td>
-                                                <td className="p-4">
-                                                    <button onClick={() => removeFromCart(item.id)} className="text-red-400 hover:text-red-600 transition-colors">
-                                                        <Trash2 className="w-5 h-5" />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                                    </td>
+                                                    <td className="p-5 font-bold text-lg">{formatCurrency(item.unitPrice, currentLanguage, 'USD')}</td>
+                                                    <td className="p-5">
+                                                        <div className="flex items-center border-2 border-border rounded-xl w-max shrink-0 bg-white shadow-sm">
+                                                            <button 
+                                                                onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)} 
+                                                                disabled={isUpdating || isRemoving}
+                                                                className="p-3 text-text-body hover:text-primary hover:bg-surface-light transition-all rounded-l-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                                                            >
+                                                                <Minus className="w-4 h-4" />
+                                                            </button>
+                                                            <span className="w-12 text-center text-base font-bold relative">
+                                                                {isUpdating ? (
+                                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                                        <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                                                                    </div>
+                                                                ) : (
+                                                                    item.quantity
+                                                                )}
+                                                            </span>
+                                                            <button 
+                                                                onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)} 
+                                                                disabled={isUpdating || isRemoving}
+                                                                className="p-3 text-text-body hover:text-primary hover:bg-surface-light transition-all rounded-r-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                                                            >
+                                                                <Plus className="w-4 h-4" />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-5 font-bold text-xl text-primary">{formatCurrency(item.totalPrice, currentLanguage, 'USD')}</td>
+                                                    <td className="p-5">
+                                                        <button 
+                                                            onClick={() => handleRemove(item.id)} 
+                                                            disabled={isRemoving}
+                                                            className="text-red-400 hover:text-red-600 hover:scale-110 transition-all p-2 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        >
+                                                            {isRemoving ? (
+                                                                <div className="w-6 h-6 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"></div>
+                                                            ) : (
+                                                                <Trash2 className="w-6 h-6" />
+                                                            )}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
+                            </div>
+
+                            {/* Mobile Card View */}
+                            <div className="md:hidden space-y-4">
+                                <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-4 py-3 rounded-2xl border border-border">
+                                    <h2 className="text-xl font-bold" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('cart:title')}</h2>
+                                    <p className="text-sm text-text-body mt-1">{t('cart:itemsCount', { count: items.length })}</p>
+                                </div>
+                                {items.map((item) => {
+                                    const isUpdating = updatingItems.has(item.id);
+                                    const isRemoving = removingItems.has(item.id);
+                                    const productName = getLocalizedText(item.productName, item.productNameAr, currentLanguage);
+                                    
+                                    return (
+                                        <div key={item.id} className={`bg-white border border-border rounded-2xl p-4 shadow-lg ${isRemoving ? 'opacity-50' : ''}`}>
+                                            <div className="flex gap-4 mb-4">
+                                                <Link to={`/product/${item.productId}`} className="shrink-0">
+                                                    <img src={item.imageUrl} alt={productName} className="w-24 h-24 rounded-xl object-cover border-2 border-border" />
+                                                </Link>
+                                                <div className="flex-1 min-w-0">
+                                                    <Link to={`/product/${item.productId}`} className="font-bold text-base hover:text-primary transition-colors line-clamp-2 mb-1">
+                                                        {productName}
+                                                    </Link>
+                                                    {item.variantName && <p className="text-xs text-text-body mb-2">{t('cart:labels.variant')}: {item.variantName}</p>}
+                                                    <p className="text-sm text-text-body">{t('cart:labels.unitPrice')}: <span className="font-bold text-heading">{formatCurrency(item.unitPrice, currentLanguage, 'USD')}</span></p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="flex items-center justify-between pt-4 border-t border-border">
+                                                <div className="flex items-center border-2 border-border rounded-xl bg-white shadow-sm">
+                                                    <button 
+                                                        onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)} 
+                                                        disabled={isUpdating || isRemoving}
+                                                        className="p-2 text-text-body hover:text-primary hover:bg-surface-light transition-all rounded-l-xl disabled:opacity-50"
+                                                    >
+                                                        <Minus className="w-4 h-4" />
+                                                    </button>
+                                                    <span className="w-10 text-center text-base font-bold relative">
+                                                        {isUpdating ? (
+                                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                                <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                                                            </div>
+                                                        ) : (
+                                                            item.quantity
+                                                        )}
+                                                    </span>
+                                                    <button 
+                                                        onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)} 
+                                                        disabled={isUpdating || isRemoving}
+                                                        className="p-2 text-text-body hover:text-primary hover:bg-surface-light transition-all rounded-r-xl disabled:opacity-50"
+                                                    >
+                                                        <Plus className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                                
+                                                <div className="text-right">
+                                                    <p className="text-xs text-text-body mb-1">{t('cart:labels.subtotal')}</p>
+                                                    <p className="text-xl font-bold text-primary">{formatCurrency(item.totalPrice, currentLanguage, 'USD')}</p>
+                                                </div>
+                                                
+                                                <button 
+                                                    onClick={() => handleRemove(item.id)} 
+                                                    disabled={isRemoving}
+                                                    className="text-red-400 hover:text-red-600 transition-all p-2 rounded-lg hover:bg-red-50 disabled:opacity-50"
+                                                >
+                                                    {isRemoving ? (
+                                                        <div className="w-5 h-5 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"></div>
+                                                    ) : (
+                                                        <Trash2 className="w-5 h-5" />
+                                                    )}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
 
                         {/* Order Summary */}
                         <div className="w-full lg:w-96 shrink-0">
-                            <div className="bg-card border border-border rounded-xl p-6">
-                                <h3 className="text-xl font-bold mb-4 border-b border-border pb-4">Order Summary</h3>
-                                <div className="space-y-3 mb-6">
-                                    <div className="flex justify-between text-text-body">
-                                        <span>Subtotal</span>
-                                        <span className="font-semibold text-heading">${cartTotal.toFixed(2)}</span>
+                            <div className="bg-white border border-border rounded-3xl p-8 shadow-xl sticky top-24">
+                                <h3 className="text-2xl font-bold mb-6 pb-5 border-b-2 border-border" style={{ fontFamily: "'Quicksand', sans-serif" }}>{t('cart:summary.title')}</h3>
+                                <div className="space-y-4 mb-8">
+                                    <div className="flex justify-between text-text-body text-base">
+                                        <span>{t('cart:summary.subtotal')}</span>
+                                        <span className="font-bold text-heading text-lg">{formatCurrency(cartTotal, currentLanguage, 'USD')}</span>
                                     </div>
-                                    <div className="flex justify-between text-text-body">
-                                        <span>Shipping</span>
-                                        <span className="font-semibold text-heading text-green-600">Free</span>
+                                    <div className="flex justify-between text-text-body text-base">
+                                        <span>{t('cart:summary.shipping')}</span>
+                                        <span className="font-bold text-green-600 text-lg">{t('common:messages.free', 'Free')}</span>
                                     </div>
-                                    <div className="flex justify-between text-text-body">
-                                        <span>Tax (calc at checkout)</span>
-                                        <span className="font-semibold text-heading">$0.00</span>
+                                    <div className="flex justify-between text-text-body text-base">
+                                        <span>{t('cart:summary.tax')}</span>
+                                        <span className="font-bold text-heading text-lg">{formatCurrency(0, currentLanguage, 'USD')}</span>
                                     </div>
-                                    <div className="border-t border-border pt-3 flex justify-between font-bold text-lg">
-                                        <span>Total</span>
-                                        <span className="text-primary">${cartTotal.toFixed(2)}</span>
+                                    <div className="border-t-2 border-border pt-5 flex justify-between font-bold text-2xl">
+                                        <span>{t('cart:summary.total')}</span>
+                                        <span className="text-primary">{formatCurrency(cartTotal, currentLanguage, 'USD')}</span>
                                     </div>
                                 </div>
-                                <Link to="/checkout" className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-                                    Proceed To Checkout <ArrowRight className="w-4 h-4" />
+                                <Link to="/checkout" className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold text-base flex items-center justify-center gap-3 hover:scale-105 transition-all shadow-lg">
+                                    {t('cart:summary.proceedToCheckout')} <ArrowRight className="w-5 h-5" />
                                 </Link>
+                                <p className="text-xs text-text-body text-center mt-4">Secure checkout powered by Stripe</p>
                             </div>
                         </div>
                     </div>

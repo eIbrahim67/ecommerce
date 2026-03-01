@@ -1,0 +1,64 @@
+{
+  "title": "الدفع الآمن",
+  "emptyCart": {
+    "title": "الدفع غير متاح.",
+    "message": "سلتك فارغة. يرجى إضافة عناصر قبل الدفع.",
+    "returnToShop": "العودة للمتجر"
+  },
+  "paymentMethod": {
+    "title": "طريقة الدفع",
+    "card": {
+      "title": "بطاقة الخصم/الائتمان",
+      "description": "ادفع بأمان ببطاقتك"
+    },
+    "cod": {
+      "title": "الدفع عند الاستلام",
+      "description": "ادفع عند استلام الطلب"
+    }
+  },
+  "shippingInfo": {
+    "title": "معلومات الشحن",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "address": "عنوان الشارع",
+    "addressPlaceholder": "رقم المنزل واسم الشارع",
+    "city": "المدينة / البلدة",
+    "zipCode": "الرمز البريدي",
+    "required": "*"
+  },
+  "orderDetails": {
+    "title": "تفاصيل الطلب",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "shippingFree": "مجاني",
+    "codFee": "رسوم الدفع عند الاستلام",
+    "total": "الإجمالي"
+  },
+  "buttons": {
+    "placeOrder": "تأكيد الطلب",
+    "proceedToPayment": "المتابعة للدفع",
+    "processing": "جاري المعالجة..."
+  },
+  "security": {
+    "codCheckout": "دفع آمن - الدفع عند الاستلام",
+    "paymobCheckout": "دفع آمن بواسطة Paymob"
+  },
+  "validation": {
+    "firstNameRequired": "الاسم الأول مطلوب",
+    "lastNameRequired": "اسم العائلة مطلوب",
+    "emailRequired": "البريد الإلكتروني صحيح مطلوب",
+    "phoneRequired": "رقم هاتف صحيح مطلوب",
+    "addressRequired": "العنوان يجب أن يكون 5 أحرف على الأقل",
+    "cityRequired": "المدينة مطلوبة",
+    "zipCodeRequired": "رمز بريدي صحيح مطلوب"
+  },
+  "messages": {
+    "orderCreated": "تم إنشاء الطلب بنجاح!",
+    "codSuccess": "تم تقديم الطلب! ستدفع عند الاستلام.",
+    "preparingPayment": "جاري تحضير الدفع...",
+    "paymentFailed": "فشل تهيئة الدفع. يرجى المحاولة مرة أخرى.",
+    "checkoutFailed": "فشلت معالجة الدفع. يرجى المحاولة مرة أخرى."
+  }
+}

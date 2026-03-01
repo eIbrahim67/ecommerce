@@ -1,0 +1,46 @@
+{
+  "header": {
+    "home": "Home",
+    "shop": "Shop",
+    "about": "About",
+    "contact": "Contact",
+    "cart": "Cart",
+    "wishlist": "Wishlist",
+    "account": "Account",
+    "supportCenter": "24/7 Support Center"
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "customerService": "Customer Service",
+    "followUs": "Follow Us",
+    "copyright": "© 2024 E-Commerce. All rights reserved.",
+    "tagline": "Your trusted partner for fresh, organic groceries delivered right to your doorstep.",
+    "company": "Company",
+    "account": "Account",
+    "corporate": "Corporate",
+    "popular": "Popular",
+    "hours": "Open 24 hours, all days",
+    "links": {
+      "aboutUs": "About Us",
+      "deliveryInfo": "Delivery Information",
+      "privacyPolicy": "Privacy Policy",
+      "termsConditions": "Terms & Conditions",
+      "contactUs": "Contact Us",
+      "signIn": "Sign In",
+      "viewCart": "View Cart",
+      "myWishlist": "My Wishlist",
+      "trackOrder": "Track My Order",
+      "helpTicket": "Help Ticket",
+      "becomeVendor": "Become a Vendor",
+      "affiliateProgram": "Affiliate Program",
+      "farmBusiness": "Farm Business",
+      "farmCareers": "Farm Careers",
+      "ourSuppliers": "Our Suppliers",
+      "milk": "Milk & Flavoured Milk",
+      "butter": "Butter and Margarine",
+      "eggs": "Eggs Substitutes",
+      "marmalades": "Marmalades",
+      "sourCream": "Sour Cream and Dips"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "title": "My Wishlist",
+  "itemCount": "({count})",
+  "empty": {
+    "title": "Your wishlist is empty",
+    "message": "You haven't favorited any items yet. Start browsing to add items you love!",
+    "exploreShop": "Explore Shop"
+  },
+  "buttons": {
+    "removeFromWishlist": "Remove from wishlist",
+    "addToCart": "Add to cart",
+    "remove": "Remove",
+    "removing": "Removing..."
+  }
+}

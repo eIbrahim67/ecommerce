@@ -7,6 +7,7 @@ export interface WishlistItem {
     id: number;
     productId: number;
     productName: string;
+    productNameAr?: string | null;
     basePrice: number;
     imageUrl: string;
 }

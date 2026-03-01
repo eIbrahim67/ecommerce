@@ -2,27 +2,35 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import NewsletterBanner from "@/components/NewsletterBanner";
 import { CheckCircle } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
+import SEO from "@/components/SEO";
 
 const About = () => {
+  const { t } = useLanguage();
+
   const features = [
-    { icon: "💰", title: "Best Prices & Offers" },
-    { icon: "🧺", title: "Wide Assortment" },
-    { icon: "🚚", title: "Free Delivery" },
-    { icon: "↩️", title: "Easy Returns" },
-    { icon: "✅", title: "100% Satisfaction" },
-    { icon: "🏷️", title: "Great Daily Deal" },
+    { icon: "💰", title: t('about:whatWeProvide.features.bestPrices') },
+    { icon: "🧺", title: t('about:whatWeProvide.features.wideAssortment') },
+    { icon: "🚚", title: t('about:whatWeProvide.features.freeDelivery') },
+    { icon: "↩️", title: t('about:whatWeProvide.features.easyReturns') },
+    { icon: "✅", title: t('about:whatWeProvide.features.satisfaction') },
+    { icon: "🏷️", title: t('about:whatWeProvide.features.dailyDeal') },
   ];
 
   const stats = [
-    { value: "10+", label: "Glorious years" },
-    { value: "500+", label: "Happy clients" },
-    { value: "100+", label: "Projects complete" },
-    { value: "25+", label: "Team advisor" },
-    { value: "1M+", label: "Products Sale" },
+    { value: "10+", label: t('about:stats.gloriousYears') },
+    { value: "500+", label: t('about:stats.happyClients') },
+    { value: "100+", label: t('about:stats.projectsComplete') },
+    { value: "25+", label: t('about:stats.teamAdvisor') },
+    { value: "1M+", label: t('about:stats.productsSale') },
   ];
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={t('about:pageTitle')}
+        description={t('about:pageDescription')}
+      />
       <Header />
 
       {/* Welcome section */}
@@ -34,12 +42,14 @@ const About = () => {
             </div>
           </div>
           <div className="md:w-1/2">
-            <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>Welcome to Nest</h2>
+            <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+              {t('about:welcome.title')}
+            </h2>
             <p className="text-text-body text-sm leading-relaxed mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              {t('about:welcome.paragraph1')}
             </p>
             <p className="text-text-body text-sm leading-relaxed">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+              {t('about:welcome.paragraph2')}
             </p>
           </div>
         </div>
@@ -47,14 +57,18 @@ const About = () => {
 
       {/* What we provide */}
       <section className="container mx-auto my-12 text-center">
-        <h2 className="text-3xl font-bold mb-8" style={{ fontFamily: "'Quicksand', sans-serif" }}>What We Provide?</h2>
+        <h2 className="text-3xl font-bold mb-8" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+          {t('about:whatWeProvide.title')}
+        </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
           {features.map((f) => (
             <div key={f.title} className="bg-card border border-border rounded-xl p-6 hover:shadow-lg hover:border-primary/30 transition-all">
               <span className="text-4xl mb-4 block">{f.icon}</span>
               <h3 className="font-bold text-lg mb-2" style={{ fontFamily: "'Quicksand', sans-serif" }}>{f.title}</h3>
-              <p className="text-sm text-text-body">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration.</p>
-              <a href="#" className="text-primary text-sm font-medium mt-3 inline-block hover:underline">Read more →</a>
+              <p className="text-sm text-text-body">{t('about:whatWeProvide.featureDescription')}</p>
+              <a href="#" className="text-primary text-sm font-medium mt-3 inline-block hover:underline">
+                {t('about:whatWeProvide.readMore')} →
+              </a>
             </div>
           ))}
         </div>
@@ -67,18 +81,32 @@ const About = () => {
             <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&h=400&fit=crop" alt="Performance" className="rounded-2xl w-full h-80 object-cover" />
           </div>
           <div className="md:w-1/2">
-            <p className="text-primary text-sm font-semibold mb-2">Our performance</p>
-            <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>Your Partner for e-commerce grocery solution</h2>
+            <p className="text-primary text-sm font-semibold mb-2">{t('about:performance.subtitle')}</p>
+            <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+              {t('about:performance.title')}
+            </h2>
             <p className="text-text-body text-sm leading-relaxed mb-6">
-              Ed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.
+              {t('about:performance.description')}
             </p>
             <div className="grid grid-cols-3 gap-4">
-              {["Who we are", "Our history", "Our mission"].map((title) => (
-                <div key={title}>
-                  <h4 className="font-bold text-sm mb-2" style={{ fontFamily: "'Quicksand', sans-serif" }}>{title}</h4>
-                  <p className="text-xs text-text-body">With big discounts of segments of Lorem ipsum available with many variations.</p>
-                </div>
-              ))}
+              <div>
+                <h4 className="font-bold text-sm mb-2" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+                  {t('about:performance.whoWeAre.title')}
+                </h4>
+                <p className="text-xs text-text-body">{t('about:performance.whoWeAre.description')}</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-sm mb-2" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+                  {t('about:performance.ourHistory.title')}
+                </h4>
+                <p className="text-xs text-text-body">{t('about:performance.ourHistory.description')}</p>
+              </div>
+              <div>
+                <h4 className="font-bold text-sm mb-2" style={{ fontFamily: "'Quicksand', sans-serif" }}>
+                  {t('about:performance.ourMission.title')}
+                </h4>
+                <p className="text-xs text-text-body">{t('about:performance.ourMission.description')}</p>
+              </div>
             </div>
           </div>
         </div>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Home Page -->
+  <url>
+    <loc>https://ecommerce-nest-mart.vercel.app/</loc>
+    <lastmod>2024-03-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ecommerce-nest-mart.vercel.app/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ecommerce-nest-mart.vercel.app/?lang=ar" />
+  </url>
+  
+  <!-- Shop Page -->
+  <url>
+    <loc>https://ecommerce-nest-mart.vercel.app/shop</loc>
+    <lastmod>2024-03-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ecommerce-nest-mart.vercel.app/shop" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ecommerce-nest-mart.vercel.app/shop?lang=ar" />
+  </url>
+  
+  <!-- About Page -->
+  <url>
+    <loc>https://ecommerce-nest-mart.vercel.app/about</loc>
+    <lastmod>2024-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ecommerce-nest-mart.vercel.app/about" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ecommerce-nest-mart.vercel.app/about?lang=ar" />
+  </url>
+  
+  <!-- Contact Page -->
+  <url>
+    <loc>https://ecommerce-nest-mart.vercel.app/contact</loc>
+    <lastmod>2024-03-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ecommerce-nest-mart.vercel.app/contact" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ecommerce-nest-mart.vercel.app/contact?lang=ar" />
+  </url>
+  
+</urlset>
